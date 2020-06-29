@@ -3,7 +3,7 @@ formatting:
   AnnotationOnSeparateLine:
     active: false
   FinalNewline:
-    active: false
+    active: true
 
 naming:
   FunctionMaxLength:
@@ -11,4 +11,4 @@ naming:
 
 style:
   NewLineAtEndOfFile:
-    active: false
+    active: true
