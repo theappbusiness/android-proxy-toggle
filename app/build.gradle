@@ -1,51 +1,20 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
 }
 
-android {
-    compileSdkVersion 29
-    buildToolsVersion "30.0.0"
+apply from: rootProject.file("buildScripts/common.gradle")
 
+android {
     defaultConfig {
         applicationId "com.kinandcarta.create.proxytoggle"
-        minSdkVersion 21
-        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
+
 
 dependencies {
-
-    implementation Libs.kotlin_stdlib
-    implementation Libs.core_ktx
-    implementation Libs.appcompat
-    implementation Libs.material
-    implementation Libs.constraintlayout
-    implementation Libs.lifecycle_livedata_ktx
-    implementation Libs.lifecycle_viewmodel_ktx
-
-    testImplementation Libs.junit_junit
-
-    androidTestImplementation Libs.androidx_test_ext_junit
-    androidTestImplementation Libs.espresso_core
+    implementation project("::feature-proxy-manager")
 }
-
-preBuild.dependsOn('detekt')
