@@ -1,0 +1,10 @@
+apply plugin:  'com.android.library'
+apply from: rootProject.file("buildScripts/common.gradle")
+
+dependencies {
+    implementation Libs.constraintlayout
+    implementation Libs.core_ktx
+    implementation Libs.fragment_ktx
+    implementation Libs.lifecycle_livedata_ktx
+    implementation Libs.lifecycle_viewmodel_ktx
+}

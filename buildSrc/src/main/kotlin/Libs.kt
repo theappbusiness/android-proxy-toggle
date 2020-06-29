@@ -22,6 +22,26 @@ object Libs {
     /**
      * https://kotlinlang.org/
      */
+    const val kotlin_android_extensions: String =
+            "org.jetbrains.kotlin:kotlin-android-extensions:" + Versions.org_jetbrains_kotlin
+
+    /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_android_extensions_runtime: String =
+            "org.jetbrains.kotlin:kotlin-android-extensions-runtime:" +
+            Versions.org_jetbrains_kotlin
+
+    /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_annotation_processing_gradle: String =
+            "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:" +
+            Versions.org_jetbrains_kotlin
+
+    /**
+     * https://kotlinlang.org/
+     */
     const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +
             Versions.org_jetbrains_kotlin
 
@@ -42,6 +62,19 @@ object Libs {
      */
     const val lifecycle_viewmodel_ktx: String = "androidx.lifecycle:lifecycle-viewmodel-ktx:" +
             Versions.androidx_lifecycle
+
+    const val hilt_android: String = "com.google.dagger:hilt-android:" + Versions.com_google_dagger
+
+    const val hilt_android_compiler: String = "com.google.dagger:hilt-android-compiler:" +
+            Versions.com_google_dagger
+
+    const val hilt_android_gradle_plugin: String = "com.google.dagger:hilt-android-gradle-plugin:" +
+            Versions.com_google_dagger
+
+    const val hilt_compiler: String = "androidx.hilt:hilt-compiler:" + Versions.androidx_hilt
+
+    const val hilt_lifecycle_viewmodel: String = "androidx.hilt:hilt-lifecycle-viewmodel:" +
+            Versions.androidx_hilt
 
     /**
      * https://developer.android.com/studio
@@ -77,9 +110,16 @@ object Libs {
             Versions.espresso_core
 
     /**
+     * https://developer.android.com/jetpack/androidx
+     */
+    const val fragment_ktx: String = "androidx.fragment:fragment-ktx:" + Versions.fragment_ktx
+
+    /**
      * https://developer.android.com/studio
      */
     const val lint_gradle: String = "com.android.tools.lint:lint-gradle:" + Versions.lint_gradle
+
+    const val viewbinding: String = "androidx.databinding:viewbinding:" + Versions.viewbinding
 
     /**
      * https://developer.android.com/jetpack/androidx
