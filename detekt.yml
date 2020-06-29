@@ -1,0 +1,14 @@
+formatting:
+  autoCorrect: true
+  AnnotationOnSeparateLine:
+    active: false
+  FinalNewline:
+    active: true
+
+naming:
+  FunctionMaxLength:
+    active: false
+
+style:
+  NewLineAtEndOfFile:
+    active: true
