@@ -24,3 +24,7 @@ TODO: Probably MVVM
 ### Testing
 
 TODO: Probably only Unit Test. Maybe setup CI?
+
+## License
+
+Proxy Toggle is available under the MIT license. See the [LICENSE](LICENSE.md) file for more info.
