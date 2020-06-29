@@ -8,6 +8,18 @@ import kotlin.String
  */
 object Libs {
     /**
+     * https://detekt.github.io/detekt
+     */
+    const val detekt_formatting: String = "io.gitlab.arturbosch.detekt:detekt-formatting:" +
+            Versions.io_gitlab_arturbosch_detekt
+
+    /**
+     * https://detekt.github.io/detekt
+     */
+    const val detekt_gradle_plugin: String = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:" +
+            Versions.io_gitlab_arturbosch_detekt
+
+    /**
      * https://kotlinlang.org/
      */
     const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +

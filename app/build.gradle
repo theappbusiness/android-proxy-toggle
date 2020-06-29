@@ -47,3 +47,5 @@ dependencies {
     androidTestImplementation Libs.androidx_test_ext_junit
     androidTestImplementation Libs.espresso_core
 }
+
+preBuild.dependsOn('detekt')

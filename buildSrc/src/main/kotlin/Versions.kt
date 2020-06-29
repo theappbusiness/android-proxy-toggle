@@ -12,6 +12,8 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
+    const val io_gitlab_arturbosch_detekt: String = "1.10.0"
+
     const val org_jetbrains_kotlin: String = "1.3.72"
 
     const val androidx_lifecycle: String = "2.2.0"
