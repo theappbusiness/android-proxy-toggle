@@ -6,7 +6,6 @@ buildscript {
         google()
         jcenter()
         gradlePluginPortal()
-        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath Libs.com_android_tools_build_gradle
