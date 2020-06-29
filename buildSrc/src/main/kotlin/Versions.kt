@@ -18,6 +18,10 @@ object Versions {
 
     const val androidx_lifecycle: String = "2.2.0"
 
+    const val com_google_dagger: String = "2.28.1-alpha"
+
+    const val androidx_hilt: String = "1.0.0-alpha01"
+
     const val com_android_tools_build_gradle: String = "4.2.0-alpha02"
 
     const val androidx_test_ext_junit: String = "1.1.1"
@@ -30,7 +34,11 @@ object Versions {
 
     const val espresso_core: String = "3.2.0"
 
+    const val fragment_ktx: String = "1.2.5"
+
     const val lint_gradle: String = "27.2.0-alpha02"
+
+    const val viewbinding: String = "4.2.0-alpha02"
 
     const val appcompat: String = "1.1.0"
 

@@ -1,6 +1,7 @@
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 apply from: rootProject.file("buildScripts/common-dependencies.gradle")
 
 android {
@@ -12,8 +13,8 @@ android {
         targetSdkVersion 29
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures{
+        viewBinding = true
     }
 
     androidExtensions {
