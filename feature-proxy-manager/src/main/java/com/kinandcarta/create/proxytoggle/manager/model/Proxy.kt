@@ -9,9 +9,11 @@ data class Proxy(val address: String, val port: Int) {
 
         val Disabled = Proxy(DISABLED_ADDRESS, DISABLED_PORT)
 
-        fun from(proxy: String): Proxy {
-            val (address, port) = proxy.split(DELIMITER)
-            return Proxy(address, port.toInt())
+        fun from(proxy: String?): Proxy {
+            return proxy?.let {
+                val (address, port) = proxy.split(DELIMITER)
+                Proxy(address, port.toInt())
+            } ?: Disabled
         }
     }
 
