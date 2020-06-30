@@ -31,7 +31,7 @@ Each ViewModel must be injected using `@ViewModelInject` in order to be provided
 
 ### Testing
 
-TODO: Probably only Unit Test. Maybe setup CI?
+We use Github Actions to execute all Unit Tests in the project for every PR against the `main` branch.
 
 ### Features
 
