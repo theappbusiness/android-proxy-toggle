@@ -5,9 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.manager.awaitValue
 import com.kinandcarta.create.proxytoggle.manager.model.Proxy
-import com.kinandcarta.create.proxytoggle.manager.view.DeviceSettingsManager
+import com.kinandcarta.create.proxytoggle.manager.android.DeviceSettingsManager
+import com.kinandcarta.create.proxytoggle.manager.android.ProxyValidator
+import com.kinandcarta.create.proxytoggle.manager.view.ProxyManagerEvent
 import com.kinandcarta.create.proxytoggle.manager.view.ProxyState
 import io.mockk.*
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.After
 import org.junit.Before
@@ -27,6 +30,9 @@ class ProxyManagerViewModelTest {
 
     @RelaxedMockK
     private lateinit var mockDeviceSettingsManager: DeviceSettingsManager
+
+    @MockK
+    private lateinit var mockProxyValidator: ProxyValidator
 
     private val fakeLiveData = MutableLiveData(Proxy.Disabled)
 
@@ -48,7 +54,10 @@ class ProxyManagerViewModelTest {
             fakeLiveData.value = Proxy.Disabled
         }
 
-        subject = ProxyManagerViewModel(mockDeviceSettingsManager)
+        every { mockProxyValidator.isValidIP(any()) } returns true
+        every { mockProxyValidator.isValidPort(any()) } returns true
+
+        subject = ProxyManagerViewModel(mockDeviceSettingsManager, mockProxyValidator)
     }
 
     @After
@@ -62,6 +71,28 @@ class ProxyManagerViewModelTest {
 
         verify { mockDeviceSettingsManager.enableProxy(Proxy(ADDRESS, PORT)) }
         assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Enabled(ADDRESS, PORT))
+    }
+
+    @Test
+    fun `enableProxy() - invalid address triggers event and proxyState is Disconnected`() {
+        every { mockProxyValidator.isValidIP(ADDRESS) } returns false
+
+        subject.enableProxy(ADDRESS, PORT)
+
+        verify { mockDeviceSettingsManager wasNot Called }
+        assertThat(subject.proxyEvent.awaitValue()).isEqualTo(ProxyManagerEvent.InvalidAddress)
+        assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Disabled())
+    }
+
+    @Test
+    fun `enableProxy() - invalid port triggers event and proxyState is Disconnected`() {
+        every { mockProxyValidator.isValidPort(PORT) } returns false
+
+        subject.enableProxy(ADDRESS, PORT)
+
+        verify { mockDeviceSettingsManager wasNot Called }
+        assertThat(subject.proxyEvent.awaitValue()).isEqualTo(ProxyManagerEvent.InvalidPort)
+        assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Disabled())
     }
 
     @Test

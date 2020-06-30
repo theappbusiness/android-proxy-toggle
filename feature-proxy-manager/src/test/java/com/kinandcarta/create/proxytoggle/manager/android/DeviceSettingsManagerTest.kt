@@ -1,4 +1,4 @@
-package com.kinandcarta.create.proxytoggle.manager.view
+package com.kinandcarta.create.proxytoggle.manager.android
 
 import android.content.Context
 import android.os.Build

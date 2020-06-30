@@ -1,9 +1,9 @@
-package com.kinandcarta.create.proxytoggle.manager.view
+package com.kinandcarta.create.proxytoggle.manager.android
 
 import android.content.Context
 import android.provider.Settings
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.kinandcarta.create.proxytoggle.manager.extensions.asLiveData
 import com.kinandcarta.create.proxytoggle.manager.model.Proxy
 import com.kinandcarta.create.proxytoggle.manager.model.ProxyMapper
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -17,9 +17,7 @@ class DeviceSettingsManager @Inject constructor(
     private val contentResolver by lazy { context.contentResolver }
 
     private val _proxySetting = MutableLiveData<Proxy>()
-
-    val proxySetting: LiveData<Proxy>
-        get() = _proxySetting
+    val proxySetting = _proxySetting.asLiveData()
 
     init {
         updateProxyData()
