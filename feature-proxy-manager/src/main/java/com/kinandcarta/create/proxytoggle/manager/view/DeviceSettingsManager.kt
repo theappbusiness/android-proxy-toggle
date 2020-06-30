@@ -5,10 +5,14 @@ import android.provider.Settings
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kinandcarta.create.proxytoggle.manager.model.Proxy
+import com.kinandcarta.create.proxytoggle.manager.model.ProxyMapper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class DeviceSettingsManager @Inject constructor(@ApplicationContext context: Context) {
+class DeviceSettingsManager @Inject constructor(
+    @ApplicationContext context: Context,
+    private val proxyMapper: ProxyMapper
+) {
 
     private val contentResolver by lazy { context.contentResolver }
 
@@ -41,6 +45,6 @@ class DeviceSettingsManager @Inject constructor(@ApplicationContext context: Con
 
     private fun updateProxyData() {
         val proxySetting = Settings.Global.getString(contentResolver, Settings.Global.HTTP_PROXY)
-        _proxySetting.value = Proxy.from(proxySetting)
+        _proxySetting.value = proxyMapper.from(proxySetting)
     }
 }

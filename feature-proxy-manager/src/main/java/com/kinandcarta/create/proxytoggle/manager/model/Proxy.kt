@@ -5,20 +5,8 @@ data class Proxy(val address: String, val port: Int) {
     companion object {
         private const val DISABLED_ADDRESS = ""
         private const val DISABLED_PORT = 0
-        private const val DELIMITER = ":"
 
         val Disabled = Proxy(DISABLED_ADDRESS, DISABLED_PORT)
-
-        fun from(proxy: String?): Proxy {
-            return proxy?.let {
-                try {
-                    val (address, port) = proxy.split(DELIMITER)
-                    Proxy(address, port.toInt())
-                } catch (ignored: Exception) {
-                    Disabled
-                }
-            } ?: Disabled
-        }
     }
 
     val isEnabled: Boolean
