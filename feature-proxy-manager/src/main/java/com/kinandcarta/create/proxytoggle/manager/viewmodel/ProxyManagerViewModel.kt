@@ -14,7 +14,7 @@ class ProxyManagerViewModel @ViewModelInject constructor(
     val proxyState = Transformations.map(deviceSettingsManager.proxySetting) { proxy ->
         if (proxy.isEnabled) {
             ProxyState.Enabled(proxy.address, proxy.port)
-        } else ProxyState.Disabled
+        } else ProxyState.Disabled()
     }
 
     fun enableProxy(address: String, port: String) {

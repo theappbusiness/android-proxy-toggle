@@ -69,6 +69,6 @@ class ProxyManagerViewModelTest {
         subject.disableProxy()
 
         verify { mockDeviceSettingsManager.disableProxy() }
-        assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Disabled)
+        assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Disabled())
     }
 }
