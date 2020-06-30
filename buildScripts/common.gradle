@@ -22,9 +22,7 @@ android {
     }
 
     testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
+        unitTests.includeAndroidResources = true
     }
 
     buildTypes {

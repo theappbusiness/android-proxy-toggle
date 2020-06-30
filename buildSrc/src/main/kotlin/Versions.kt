@@ -26,6 +26,8 @@ object Versions {
 
     const val androidx_test_ext_junit: String = "1.1.1"
 
+    const val androidx_test_core: String = "1.2.0"
+
     const val junit_junit: String = "4.13"
 
     const val de_fayard_buildsrcversions_gradle_plugin: String = "0.7.0"
@@ -38,6 +40,8 @@ object Versions {
 
     const val lint_gradle: String = "27.2.0-alpha02"
 
+    const val robolectric: String = "4.3.1"
+
     const val viewbinding: String = "4.2.0-alpha02"
 
     const val appcompat: String = "1.1.0"
@@ -48,12 +52,16 @@ object Versions {
 
     const val aapt2: String = "4.2.0-alpha02-6567757"
 
+    const val mockk: String = "1.10.0"
+
+    const val truth: String = "1.0.1"
+
     /**
      * Current version: "6.5-rc-1"
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "6.5"
+    const val gradleLatestVersion: String = "6.5.1"
 }
 
 /**
