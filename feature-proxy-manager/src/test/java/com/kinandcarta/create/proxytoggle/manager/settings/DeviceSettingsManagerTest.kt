@@ -13,15 +13,15 @@ import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.P])
-class SettingsManagerTest {
+class DeviceSettingsManagerTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
 
-    private lateinit var subject: SettingsManager
+    private lateinit var subject: DeviceSettingsManager
 
     @Before
     fun setUp() {
-        subject = SettingsManager(context)
+        subject = DeviceSettingsManager(context)
     }
 
     @Test

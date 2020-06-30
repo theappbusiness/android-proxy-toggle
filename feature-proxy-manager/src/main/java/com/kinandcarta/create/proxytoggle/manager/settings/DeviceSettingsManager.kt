@@ -8,7 +8,7 @@ import com.kinandcarta.create.proxytoggle.manager.model.Proxy
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class SettingsManager @Inject constructor(@ApplicationContext context: Context) {
+class DeviceSettingsManager @Inject constructor(@ApplicationContext context: Context) {
 
     private val contentResolver by lazy { context.contentResolver }
 
