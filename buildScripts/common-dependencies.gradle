@@ -10,6 +10,11 @@ dependencies {
     kapt Libs.hilt_compiler
 
     testImplementation Libs.junit_junit
+    testImplementation Libs.androidx_test_ext_junit
+    testImplementation Libs.androidx_test_core
+    testImplementation Libs.robolectric
+    testImplementation Libs.truth
+    testImplementation Libs.mockk
 
     androidTestImplementation Libs.androidx_test_ext_junit
     androidTestImplementation Libs.espresso_core

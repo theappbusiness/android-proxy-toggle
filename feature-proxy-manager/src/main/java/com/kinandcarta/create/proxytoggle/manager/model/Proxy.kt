@@ -11,8 +11,12 @@ data class Proxy(val address: String, val port: Int) {
 
         fun from(proxy: String?): Proxy {
             return proxy?.let {
-                val (address, port) = proxy.split(DELIMITER)
-                Proxy(address, port.toInt())
+                try {
+                    val (address, port) = proxy.split(DELIMITER)
+                    Proxy(address, port.toInt())
+                } catch (ignored: Exception) {
+                    Disabled
+                }
             } ?: Disabled
         }
     }
@@ -23,6 +27,4 @@ data class Proxy(val address: String, val port: Int) {
     override fun toString(): String {
         return "$address:$port"
     }
-
-    private fun List<String>.second() = this[1]
 }
