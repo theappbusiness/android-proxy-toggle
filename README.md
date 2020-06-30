@@ -1,5 +1,7 @@
 # Proxy Toggle
 
+![PR Check](https://github.com/theappbusiness/android-proxy-toggle/workflows/PR%20Check/badge.svg?branch=main)
+
 Small application to help Android and Test Engineers to quickly enable/disable global proxy settings without the faff of going through the annoying Network Settings path.
 
 ---
