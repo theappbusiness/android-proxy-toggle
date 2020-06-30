@@ -89,6 +89,11 @@ object Libs {
             Versions.androidx_test_ext_junit
 
     /**
+     * https://developer.android.com/testing
+     */
+    const val androidx_test_core: String = "androidx.test:core:" + Versions.androidx_test_core
+
+    /**
      * http://junit.org
      */
     const val junit_junit: String = "junit:junit:" + Versions.junit_junit
@@ -119,6 +124,11 @@ object Libs {
      */
     const val lint_gradle: String = "com.android.tools.lint:lint-gradle:" + Versions.lint_gradle
 
+    /**
+     * http://robolectric.org
+     */
+    const val robolectric: String = "org.robolectric:robolectric:" + Versions.robolectric
+
     const val viewbinding: String = "androidx.databinding:viewbinding:" + Versions.viewbinding
 
     /**
@@ -140,4 +150,14 @@ object Libs {
      * https://developer.android.com/studio
      */
     const val aapt2: String = "com.android.tools.build:aapt2:" + Versions.aapt2
+
+    /**
+     * http://mockk.io
+     */
+    const val mockk: String = "io.mockk:mockk:" + Versions.mockk
+
+    /**
+     * http://github.com/google/truth
+     */
+    const val truth: String = "com.google.truth:truth:" + Versions.truth
 }

@@ -1,5 +1,7 @@
 # Proxy Toggle
 
+![PR Check](https://github.com/theappbusiness/android-proxy-toggle/workflows/PR%20Check/badge.svg?branch=main)
+
 Small application to help Android and Test Engineers to quickly enable/disable global proxy settings without the faff of going through the annoying Network Settings path.
 
 ---
@@ -31,7 +33,22 @@ Each ViewModel must be injected using `@ViewModelInject` in order to be provided
 
 ### Testing
 
-TODO: Probably only Unit Test. Maybe setup CI?
+We use Github Actions to execute all Unit Tests in the project for every PR against the `main` branch.
+
+### Features
+
+#### DeviceSettingsManager
+
+This class will use [Settings.Global](https://developer.android.com/reference/android/provider/Settings.Global). Since this is a system setting, we are allowed to read these settings, but we're not allowed to write them.
+This small inconvenience is bypassed by granting the app `WRITE_SECURE_SETTINGS` permissions.
+
+> Note: this is a protected permission that only System apps should be granted. Be extra careful when you grant these permissions for unknown sources apps.
+
+In order to gran these permissions, every time you install the application, connect the device to your computer and execute the following command:
+
+```
+adb shell pm grant com.kinandcarta.create.proxytoggle android.permission.WRITE_SECURE_SETTINGS
+```
 
 ## License
 
