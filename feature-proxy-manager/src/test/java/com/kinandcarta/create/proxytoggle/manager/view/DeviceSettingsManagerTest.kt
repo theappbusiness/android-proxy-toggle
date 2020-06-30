@@ -35,7 +35,7 @@ class DeviceSettingsManagerTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        every { mockProxyMapper.from(PROXY_ENABLED) } returns Proxy(address = "1.2.3.4", port = 515)
+        every { mockProxyMapper.from(PROXY_ENABLED) } returns Proxy("1.2.3.4", "515")
         every { mockProxyMapper.from(PROXY_DISABLED) } returns Proxy.Disabled
         every { mockProxyMapper.from(null) } returns Proxy.Disabled
 
@@ -49,11 +49,11 @@ class DeviceSettingsManagerTest {
 
     @Test
     fun `enableProxy() - applies given proxy and proxySetting is updated`() {
-        val proxy = Proxy(address = "1.2.3.4", port = 515)
+        val proxy = Proxy("1.2.3.4", "515")
 
         subject.enableProxy(proxy)
 
-        assertThat(subject.proxySetting.value).isEqualTo(Proxy(address = "1.2.3.4", port = 515))
+        assertThat(subject.proxySetting.value).isEqualTo(Proxy("1.2.3.4", "515"))
     }
 
     @Test

@@ -7,7 +7,7 @@ class ProxyTest {
 
     companion object {
         private const val VALID_ADDRESS = "1.2.3.4"
-        private const val VALID_PORT = 515
+        private const val VALID_PORT = "515"
     }
 
     @Test

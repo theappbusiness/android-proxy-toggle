@@ -7,7 +7,7 @@ class ProxyMapperTest {
 
     companion object {
         private const val VALID_ADDRESS = "1.2.3.4"
-        private const val VALID_PORT = 515
+        private const val VALID_PORT = "515"
         private const val VALID_PROXY = "$VALID_ADDRESS:$VALID_PORT"
         private const val INVALID_PROXY = "$VALID_ADDRESS:"
     }
