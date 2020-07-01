@@ -8,7 +8,9 @@ import com.kinandcarta.create.proxytoggle.lib.core.model.Proxy
 import com.kinandcarta.create.proxytoggle.lib.core.model.ProxyMapper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class DeviceSettingsManager @Inject constructor(
     @ApplicationContext context: Context,
     private val proxyMapper: ProxyMapper,
