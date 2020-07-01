@@ -24,12 +24,16 @@ class ProxyManagerViewModel @ViewModelInject constructor(
     }
 
     fun enableProxy(address: String, port: String) {
-        if (!proxyValidator.isValidIP(address)) {
-            proxyEvent.value = ProxyManagerEvent.InvalidAddress
-        } else if (!proxyValidator.isValidPort(port)) {
-            proxyEvent.value = ProxyManagerEvent.InvalidPort
-        } else {
-            deviceSettingsManager.enableProxy(Proxy(address, port))
+        when {
+            !proxyValidator.isValidIP(address) -> {
+                proxyEvent.value = ProxyManagerEvent.InvalidAddress
+            }
+            !proxyValidator.isValidPort(port) -> {
+                proxyEvent.value = ProxyManagerEvent.InvalidPort
+            }
+            else -> {
+                deviceSettingsManager.enableProxy(Proxy(address, port))
+            }
         }
     }
 
