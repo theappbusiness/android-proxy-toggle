@@ -12,9 +12,10 @@ dependencies {
     testImplementation Libs.junit_junit
     testImplementation Libs.androidx_test_ext_junit
     testImplementation Libs.androidx_test_core
+    testImplementation Libs.core_testing
+    testImplementation Libs.mockk
     testImplementation Libs.robolectric
     testImplementation Libs.truth
-    testImplementation Libs.mockk
 
     androidTestImplementation Libs.androidx_test_ext_junit
     androidTestImplementation Libs.espresso_core
