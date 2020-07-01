@@ -75,7 +75,6 @@ class DeviceSettingsManagerTest {
         subject.disableProxy()
 
         assertThat(subject.proxySetting.value).isEqualTo(Proxy.Disabled)
-
         verify { mockProxyUpdateNotifier.notifyProxyChanged() }
     }
 }
