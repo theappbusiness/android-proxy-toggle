@@ -8,8 +8,12 @@ import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.lib.core.model.Proxy
 import com.kinandcarta.create.proxytoggle.lib.core.model.ProxyMapper
 import io.mockk.MockKAnnotations
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,6 +31,9 @@ class DeviceSettingsManagerTest {
     @MockK
     private lateinit var mockProxyMapper: ProxyMapper
 
+    @RelaxedMockK
+    private lateinit var mockProxyUpdateNotifier: ProxyUpdateNotifier
+
     private val context = ApplicationProvider.getApplicationContext<Context>()
 
     private lateinit var subject: DeviceSettingsManager
@@ -39,12 +46,18 @@ class DeviceSettingsManagerTest {
         every { mockProxyMapper.from(PROXY_DISABLED) } returns Proxy.Disabled
         every { mockProxyMapper.from(null) } returns Proxy.Disabled
 
-        subject = DeviceSettingsManager(context, mockProxyMapper)
+        subject = DeviceSettingsManager(context, mockProxyMapper, mockProxyUpdateNotifier)
+    }
+
+    @After
+    fun tearDown(){
+        confirmVerified(mockProxyUpdateNotifier)
     }
 
     @Test
     fun `initial state is disabled`() {
         assertThat(subject.proxySetting.value).isEqualTo(Proxy.Disabled)
+        verify { mockProxyUpdateNotifier.notifyProxyChanged() }
     }
 
     @Test
@@ -54,6 +67,7 @@ class DeviceSettingsManagerTest {
         subject.enableProxy(proxy)
 
         assertThat(subject.proxySetting.value).isEqualTo(Proxy("1.2.3.4", "515"))
+        verify { mockProxyUpdateNotifier.notifyProxyChanged() }
     }
 
     @Test
@@ -61,5 +75,7 @@ class DeviceSettingsManagerTest {
         subject.disableProxy()
 
         assertThat(subject.proxySetting.value).isEqualTo(Proxy.Disabled)
+
+        verify { mockProxyUpdateNotifier.notifyProxyChanged() }
     }
 }

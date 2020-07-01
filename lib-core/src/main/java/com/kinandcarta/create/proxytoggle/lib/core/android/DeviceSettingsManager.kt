@@ -11,7 +11,8 @@ import javax.inject.Inject
 
 class DeviceSettingsManager @Inject constructor(
     @ApplicationContext context: Context,
-    private val proxyMapper: ProxyMapper
+    private val proxyMapper: ProxyMapper,
+    private val proxyUpdateNotifier: ProxyUpdateNotifier
 ) {
 
     private val contentResolver by lazy { context.contentResolver }
@@ -44,5 +45,6 @@ class DeviceSettingsManager @Inject constructor(
     private fun updateProxyData() {
         val proxySetting = Settings.Global.getString(contentResolver, Settings.Global.HTTP_PROXY)
         _proxySetting.value = proxyMapper.from(proxySetting)
+        proxyUpdateNotifier.notifyProxyChanged()
     }
 }

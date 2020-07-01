@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.view.View
 import android.widget.RemoteViews
-import androidx.lifecycle.Observer
 import com.kinandcarta.create.proxytoggle.lib.core.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.lib.core.model.Proxy
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,5 +39,4 @@ class ToggleWidgetProvider : AppWidgetProvider() {
             appWidgetManager.updateAppWidget(appWidgetId, remoteView)
         }
     }
-
 }
