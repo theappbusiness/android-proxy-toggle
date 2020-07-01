@@ -17,6 +17,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ToggleWidgetProvider : AppWidgetProvider() {
 
+    // TODO Handle the scenario when the user adds the widget before the proxy
+
     companion object {
         private const val ACTION_PROXY_ENABLE = "Enable Proxy"
         private const val ACTION_PROXY_DISABLE = "Disable Proxy"
