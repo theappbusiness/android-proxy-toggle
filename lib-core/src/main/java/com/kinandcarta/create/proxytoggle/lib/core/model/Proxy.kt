@@ -1,4 +1,4 @@
-package com.kinandcarta.create.proxytoggle.manager.model
+package com.kinandcarta.create.proxytoggle.lib.core.model
 
 data class Proxy(val address: String, val port: String) {
 

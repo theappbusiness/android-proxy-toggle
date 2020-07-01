@@ -1,12 +1,12 @@
-package com.kinandcarta.create.proxytoggle.manager.android
+package com.kinandcarta.create.proxytoggle.lib.core.android
 
 import android.content.Context
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.kinandcarta.create.proxytoggle.manager.model.Proxy
-import com.kinandcarta.create.proxytoggle.manager.model.ProxyMapper
+import com.kinandcarta.create.proxytoggle.lib.core.model.Proxy
+import com.kinandcarta.create.proxytoggle.lib.core.model.ProxyMapper
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

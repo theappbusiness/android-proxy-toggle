@@ -3,9 +3,9 @@ package com.kinandcarta.create.proxytoggle.manager.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth.assertThat
-import com.kinandcarta.create.proxytoggle.manager.awaitValue
-import com.kinandcarta.create.proxytoggle.manager.model.Proxy
-import com.kinandcarta.create.proxytoggle.manager.android.DeviceSettingsManager
+import com.kinandcarta.create.proxytoggle.lib.core.awaitValue
+import com.kinandcarta.create.proxytoggle.lib.core.model.Proxy
+import com.kinandcarta.create.proxytoggle.lib.core.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.manager.android.ProxyValidator
 import com.kinandcarta.create.proxytoggle.manager.view.ProxyManagerEvent
 import com.kinandcarta.create.proxytoggle.manager.view.ProxyState

@@ -1,4 +1,4 @@
-package com.kinandcarta.create.proxytoggle.manager.extensions
+package com.kinandcarta.create.proxytoggle.lib.core.extensions
 
 import android.util.Log
 import androidx.annotation.MainThread

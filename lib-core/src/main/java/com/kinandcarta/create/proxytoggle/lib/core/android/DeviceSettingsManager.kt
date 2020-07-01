@@ -1,11 +1,11 @@
-package com.kinandcarta.create.proxytoggle.manager.android
+package com.kinandcarta.create.proxytoggle.lib.core.android
 
 import android.content.Context
 import android.provider.Settings
 import androidx.lifecycle.MutableLiveData
-import com.kinandcarta.create.proxytoggle.manager.extensions.asLiveData
-import com.kinandcarta.create.proxytoggle.manager.model.Proxy
-import com.kinandcarta.create.proxytoggle.manager.model.ProxyMapper
+import com.kinandcarta.create.proxytoggle.lib.core.extensions.asLiveData
+import com.kinandcarta.create.proxytoggle.lib.core.model.Proxy
+import com.kinandcarta.create.proxytoggle.lib.core.model.ProxyMapper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.kinandcarta.create.proxytoggle.manager.model
+package com.kinandcarta.create.proxytoggle.lib.core.model
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.kinandcarta.create.proxytoggle.manager
+package com.kinandcarta.create.proxytoggle.lib.core
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer

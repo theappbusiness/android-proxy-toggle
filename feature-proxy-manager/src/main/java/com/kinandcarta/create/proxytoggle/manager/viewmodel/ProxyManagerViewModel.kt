@@ -3,10 +3,10 @@ package com.kinandcarta.create.proxytoggle.manager.viewmodel
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.kinandcarta.create.proxytoggle.manager.android.DeviceSettingsManager
+import com.kinandcarta.create.proxytoggle.lib.core.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.manager.android.ProxyValidator
-import com.kinandcarta.create.proxytoggle.manager.extensions.SingleLiveEvent
-import com.kinandcarta.create.proxytoggle.manager.model.Proxy
+import com.kinandcarta.create.proxytoggle.lib.core.extensions.SingleLiveEvent
+import com.kinandcarta.create.proxytoggle.lib.core.model.Proxy
 import com.kinandcarta.create.proxytoggle.manager.view.ProxyManagerEvent
 import com.kinandcarta.create.proxytoggle.manager.view.ProxyState
 
