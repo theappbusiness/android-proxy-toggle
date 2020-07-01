@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kinandcarta.create.proxytoggle.manager.databinding.FragmentProxyManagerBinding
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,7 +29,5 @@ class ProxyManagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.textView.text = viewModel.salute()
     }
 }

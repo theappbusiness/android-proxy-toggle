@@ -115,6 +115,11 @@ object Libs {
             Versions.espresso_core
 
     /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val core_testing: String = "androidx.arch.core:core-testing:" + Versions.core_testing
+
+    /**
      * https://developer.android.com/jetpack/androidx
      */
     const val fragment_ktx: String = "androidx.fragment:fragment-ktx:" + Versions.fragment_ktx

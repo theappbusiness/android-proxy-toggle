@@ -1,10 +1,10 @@
 package com.kinandcarta.create.proxytoggle.manager.model
 
-data class Proxy(val address: String, val port: Int) {
+data class Proxy(val address: String, val port: String) {
 
     companion object {
         private const val DISABLED_ADDRESS = ""
-        private const val DISABLED_PORT = 0
+        private const val DISABLED_PORT = "0"
 
         val Disabled = Proxy(DISABLED_ADDRESS, DISABLED_PORT)
     }
