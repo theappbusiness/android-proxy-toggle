@@ -17,4 +17,5 @@ android {
 
 dependencies {
     implementation project("::feature-proxy-manager")
+    implementation project("::feature-widget")
 }
