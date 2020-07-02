@@ -7,6 +7,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.model.Proxy
 import com.kinandcarta.create.proxytoggle.model.ProxyMapper
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_DISABLED
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.VALID_PROXY
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -23,11 +26,6 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.P])
 class DeviceSettingsManagerTest {
 
-    companion object {
-        private const val PROXY_ENABLED = "1.2.3.4:515"
-        private const val PROXY_DISABLED = ":0"
-    }
-
     @MockK
     private lateinit var mockProxyMapper: ProxyMapper
 
@@ -42,7 +40,7 @@ class DeviceSettingsManagerTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        every { mockProxyMapper.from(PROXY_ENABLED) } returns Proxy("1.2.3.4", "515")
+        every { mockProxyMapper.from(VALID_PROXY) } returns PROXY
         every { mockProxyMapper.from(PROXY_DISABLED) } returns Proxy.Disabled
         every { mockProxyMapper.from(null) } returns Proxy.Disabled
 
@@ -62,11 +60,9 @@ class DeviceSettingsManagerTest {
 
     @Test
     fun `enableProxy() - applies given proxy and proxySetting is updated`() {
-        val proxy = Proxy("1.2.3.4", "515")
+        subject.enableProxy(PROXY)
 
-        subject.enableProxy(proxy)
-
-        assertThat(subject.proxySetting.value).isEqualTo(Proxy("1.2.3.4", "515"))
+        assertThat(subject.proxySetting.value).isEqualTo(PROXY)
         verify { mockProxyUpdateNotifier.notifyProxyChanged() }
     }
 

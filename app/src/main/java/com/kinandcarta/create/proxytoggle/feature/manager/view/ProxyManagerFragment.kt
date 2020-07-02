@@ -1,4 +1,4 @@
-package com.kinandcarta.create.proxytoggle.view.manager
+package com.kinandcarta.create.proxytoggle.feature.manager.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.kinandcarta.create.proxytoggle.databinding.FragmentProxyManagerBinding
-import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyState
 import com.kinandcarta.create.proxytoggle.feature.manager.viewmodel.ProxyManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

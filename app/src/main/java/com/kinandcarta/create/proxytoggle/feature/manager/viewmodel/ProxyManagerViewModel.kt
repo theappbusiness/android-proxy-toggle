@@ -1,4 +1,4 @@
-package com.kinandcarta.create.proxytoggle.viewmodel
+package com.kinandcarta.create.proxytoggle.feature.manager.viewmodel
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.Transformations
@@ -7,8 +7,8 @@ import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.android.ProxyValidator
 import com.kinandcarta.create.proxytoggle.extensions.SingleLiveEvent
 import com.kinandcarta.create.proxytoggle.model.Proxy
-import com.kinandcarta.create.proxytoggle.view.manager.ProxyManagerEvent
-import com.kinandcarta.create.proxytoggle.view.manager.ProxyState
+import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyManagerEvent
+import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyState
 
 class ProxyManagerViewModel @ViewModelInject constructor(
     private val deviceSettingsManager: DeviceSettingsManager,

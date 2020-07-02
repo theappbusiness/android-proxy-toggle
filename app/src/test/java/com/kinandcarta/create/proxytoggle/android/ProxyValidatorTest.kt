@@ -21,8 +21,7 @@ class ProxyValidatorTest {
         private const val INVALID_PORT_MAX_RANGE = "99515"
     }
 
-    private val subject =
-        com.kinandcarta.create.proxytoggle.android.ProxyValidator()
+    private val subject = ProxyValidator()
 
     @Test
     fun `isValidIP() - GIVEN a valid IP THEN return true`() {

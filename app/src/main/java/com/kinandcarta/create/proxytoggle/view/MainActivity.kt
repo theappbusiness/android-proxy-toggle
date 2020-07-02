@@ -3,7 +3,7 @@ package com.kinandcarta.create.proxytoggle.view
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kinandcarta.create.proxytoggle.R
-import com.kinandcarta.create.proxytoggle.view.manager.ProxyManagerFragment
+import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyManagerFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
