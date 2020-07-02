@@ -1,0 +1,22 @@
+apply plugin: "com.vanniktech.android.junit.jacoco"
+
+junitJacoco {
+    jacocoVersion = '0.8.5'
+    excludes = [
+            // Android
+            "**/*BuildConfig*",
+            // Hilt files
+            "**/*_Hilt*",
+            "**/*Hilt_*",
+            "**/*ModuleDeps*",
+            "**/*_Factory*",
+            "**/*_AssistedFactory*",
+            // ViewBinding
+            "**/databinding/*.*",
+            // Custom
+            "**/injection/*.*",
+            "**/extensions/*.*"
+    ]
+    includeNoLocationClasses = true
+    includeInstrumentationCoverageInMergedReport = false
+}

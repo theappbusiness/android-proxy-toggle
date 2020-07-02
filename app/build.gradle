@@ -6,6 +6,8 @@ plugins {
     id 'dagger.hilt.android.plugin'
 }
 
+apply from: rootProject.file("jacoco.gradle")
+
 android {
     compileSdkVersion 29
     buildToolsVersion "30.0.0"
