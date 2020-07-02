@@ -1,6 +1,6 @@
 ![Build Check](https://img.shields.io/github/workflow/status/theappbusiness/android-proxy-toggle/PR%20Check/main)
 ![Codecov report](https://img.shields.io/codecov/c/github/theappbusiness/android-proxy-toggle/main)
-[![Android API](https://img.shields.io/badge/API-21%2B-blue)](https://android-arsenal.com/api?level=21)
+![Android Version](https://img.shields.io/badge/android-%3E%3D%205.0-blue)
 ![License](https://img.shields.io/github/license/theappbusiness/android-proxy-toggle)
 
 # Proxy Toggle
