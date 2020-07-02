@@ -21,4 +21,11 @@ jobs:
         java-version: 1.8
 
     - name: Run Unit Tests
-      run: ./gradlew testDebugUnitTest
+      run: ./gradlew jacocoTestReportDebug
+
+    - name: Upload Report to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./app/build/reports/jacoco/debug/jacoco.xml
+        flags: unittests
