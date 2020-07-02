@@ -98,8 +98,9 @@ class ToggleWidgetProvider : AppWidgetProvider() {
     }
 
     private fun String.asPendingIntent(context: Context): PendingIntent {
-        val intent = Intent(context, ToggleWidgetProvider::class.java)
-        intent.action = this
+        val intent = Intent(context, ToggleWidgetProvider::class.java).apply {
+            action = this@asPendingIntent
+        }
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 }

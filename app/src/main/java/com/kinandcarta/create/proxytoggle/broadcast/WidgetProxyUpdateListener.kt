@@ -13,8 +13,9 @@ class WidgetProxyUpdateListener @Inject constructor(
 ) : com.kinandcarta.create.proxytoggle.broadcast.ProxyUpdateListener {
 
     override fun onProxyUpdate() {
-        val intent = Intent(context, ToggleWidgetProvider::class.java)
-        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        val intent = Intent(context, ToggleWidgetProvider::class.java).apply {
+            action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        }
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val widgetComponent = ComponentName(context, ToggleWidgetProvider::class.java)
         val ids = appWidgetManager.getAppWidgetIds(widgetComponent)
