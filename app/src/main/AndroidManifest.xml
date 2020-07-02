@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".widget.ToggleWidgetProvider">
+        <!-- Home Screen Widget -->
+        <receiver android:name=".feature.widget.ToggleWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.ACTION_WIDGET_RECEIVER" />
@@ -32,6 +33,18 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/toggle_widget" />
         </receiver>
+
+        <!-- Quick Settings Tile -->
+        <service
+            android:name=".feature.tile.ProxyTileService"
+            android:icon="@drawable/ic_proxy"
+            android:label="Custom Proxy"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

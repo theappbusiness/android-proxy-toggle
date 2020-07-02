@@ -1,22 +1,19 @@
 package com.kinandcarta.create.proxytoggle.model
 
 import com.google.common.truth.Truth.assertThat
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.INVALID_PROXY
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_ADDRESS
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_PORT
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.VALID_PROXY
 import org.junit.Test
 
 class ProxyMapperTest {
-
-    companion object {
-        private const val VALID_ADDRESS = "1.2.3.4"
-        private const val VALID_PORT = "515"
-        private const val VALID_PROXY = "$VALID_ADDRESS:$VALID_PORT"
-        private const val INVALID_PROXY = "$VALID_ADDRESS:"
-    }
 
     private val subject = ProxyMapper()
 
     @Test
     fun `from() - valid proxy`() {
-        val expectedProxy = Proxy(VALID_ADDRESS, VALID_PORT)
+        val expectedProxy = Proxy(PROXY_ADDRESS, PROXY_PORT)
         val result = subject.from(VALID_PROXY)
         assertThat(result).isEqualTo(expectedProxy)
     }
