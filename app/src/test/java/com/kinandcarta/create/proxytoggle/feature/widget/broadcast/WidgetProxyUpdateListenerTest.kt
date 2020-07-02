@@ -28,7 +28,7 @@ class WidgetProxyUpdateListenerTest {
     @MockK
     private lateinit var mockAppWidgetManager: AppWidgetManager
 
-    private val fakeIds = listOf(1,2,3).toIntArray()
+    private val fakeIds = listOf(1, 2, 3).toIntArray()
 
     private lateinit var subject: WidgetProxyUpdateListener
 

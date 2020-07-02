@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.android.ProxyValidator
 import com.kinandcarta.create.proxytoggle.extensions.SingleLiveEvent
-import com.kinandcarta.create.proxytoggle.model.Proxy
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyManagerEvent
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyState
+import com.kinandcarta.create.proxytoggle.model.Proxy
 
 class ProxyManagerViewModel @ViewModelInject constructor(
     private val deviceSettingsManager: DeviceSettingsManager,

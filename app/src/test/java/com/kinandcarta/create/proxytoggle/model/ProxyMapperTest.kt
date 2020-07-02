@@ -1,11 +1,9 @@
 package com.kinandcarta.create.proxytoggle.model
 
 import com.google.common.truth.Truth.assertThat
-import com.kinandcarta.create.proxytoggle.stubs.Stubs.INVALID_PROXY_PORT
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.INVALID_PROXY_ADDRESS
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.INVALID_PROXY_PORT
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY
-import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_ADDRESS
-import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_PORT
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.VALID_PROXY
 import org.junit.Test
 

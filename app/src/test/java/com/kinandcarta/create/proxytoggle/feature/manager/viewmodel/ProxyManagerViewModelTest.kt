@@ -5,14 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.awaitValue
-import com.kinandcarta.create.proxytoggle.model.Proxy
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyManagerEvent
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyState
+import com.kinandcarta.create.proxytoggle.model.Proxy
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_ADDRESS
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_PORT
-import io.mockk.*
+import io.mockk.Called
+import io.mockk.MockKAnnotations
+import io.mockk.confirmVerified
+import io.mockk.every
+import io.mockk.excludeRecords
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.slot
+import io.mockk.verify
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -66,7 +72,12 @@ class ProxyManagerViewModelTest {
         subject.enableProxy(PROXY_ADDRESS, PROXY_PORT)
 
         verify { mockDeviceSettingsManager.enableProxy(Proxy(PROXY_ADDRESS, PROXY_PORT)) }
-        assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Enabled(PROXY_ADDRESS, PROXY_PORT))
+        assertThat(subject.proxyState.awaitValue()).isEqualTo(
+            ProxyState.Enabled(
+                PROXY_ADDRESS,
+                PROXY_PORT
+            )
+        )
     }
 
     @Test

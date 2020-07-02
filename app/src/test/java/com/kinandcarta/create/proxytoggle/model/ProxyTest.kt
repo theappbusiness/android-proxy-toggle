@@ -1,8 +1,8 @@
 package com.kinandcarta.create.proxytoggle.model
 
 import com.google.common.truth.Truth.assertThat
-import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_DISABLED
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_ADDRESS
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_DISABLED
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_PORT
 import org.junit.Test
 
