@@ -32,6 +32,8 @@ object Versions {
 
     const val de_fayard_buildsrcversions_gradle_plugin: String = "0.7.0"
 
+    const val gradle_android_junit_jacoco_plugin: String = "0.16.0"
+
     const val constraintlayout: String = "1.1.3"
 
     const val espresso_core: String = "3.2.0"

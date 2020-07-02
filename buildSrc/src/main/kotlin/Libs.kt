@@ -103,6 +103,13 @@ object Libs {
             Versions.de_fayard_buildsrcversions_gradle_plugin
 
     /**
+     * http://github.com/vanniktech/gradle-android-junit-jacoco-plugin/
+     */
+    const val gradle_android_junit_jacoco_plugin: String =
+            "com.vanniktech:gradle-android-junit-jacoco-plugin:" +
+            Versions.gradle_android_junit_jacoco_plugin
+
+    /**
      * http://tools.android.com
      */
     const val constraintlayout: String = "androidx.constraintlayout:constraintlayout:" +
