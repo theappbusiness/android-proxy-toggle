@@ -1,5 +1,6 @@
-![PR Check](https://github.com/theappbusiness/android-proxy-toggle/workflows/PR%20Check/badge.svg?branch=main)
-[![API](https://img.shields.io/badge/API-21%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=21)
+![Build Check](https://img.shields.io/github/workflow/status/theappbusiness/android-proxy-toggle/PR%20Check/main)
+[![Android API](https://img.shields.io/badge/API-21%2B-blue)](https://android-arsenal.com/api?level=21)
+![License](https://img.shields.io/github/license/theappbusiness/android-proxy-toggle)
 
 # Proxy Toggle
 
@@ -23,8 +24,9 @@ This app supports Android 5.0 and above.
 
 ### Architecture
 
-The project is split in different feature modules that provide an encapsulated piece of work.
-The app follows MVVM Clean Architecture.
+Due to the simplicity of the app, the project has a single `app` module and the different features can be found under the `feature` package.
+
+The app follows MVVM Clean Architecture principles.
 
 ### Dependency Injection
 
@@ -35,6 +37,7 @@ Each ViewModel must be injected using `@ViewModelInject` in order to be provided
 ### Testing
 
 We use Github Actions to execute all Unit Tests in the project for every PR against the `main` branch.
+JaCoCo is setup to run test coverage.
 
 ### Features
 
@@ -50,6 +53,16 @@ In order to gran these permissions, every time you install the application, conn
 ```
 adb shell pm grant com.kinandcarta.create.proxytoggle android.permission.WRITE_SECURE_SETTINGS
 ```
+
+#### Home Screen Widget
+
+The app features a Home Screen widget that the user can use to quickly toggle the proxy with the last used setup, without having to even open the app.
+It will also allow the user to launch the app to configure the proxy settings, if needed.
+
+#### Quick Setting Tile
+
+Similarly to the widget, Android 7.0 and above users will have the option to add a Quick Settings Tile in their Notification Drawer.
+This tile will allow the users to toggle the proxy even without having to leave the current application they are using.
 
 ## License
 
