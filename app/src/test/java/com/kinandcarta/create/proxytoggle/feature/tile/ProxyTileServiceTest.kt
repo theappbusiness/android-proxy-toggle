@@ -3,6 +3,7 @@ package com.kinandcarta.create.proxytoggle.feature.tile
 import android.service.quicksettings.Tile
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.model.Proxy
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -14,10 +15,6 @@ import org.junit.Before
 import org.junit.Test
 
 class ProxyTileServiceTest {
-
-    companion object {
-        private val PROXY = Proxy("192.168.1.215", "8888")
-    }
 
     @RelaxedMockK
     lateinit var mockDeviceSettingsManager: DeviceSettingsManager

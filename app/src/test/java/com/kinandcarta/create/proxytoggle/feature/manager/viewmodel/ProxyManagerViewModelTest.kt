@@ -8,6 +8,8 @@ import com.kinandcarta.create.proxytoggle.awaitValue
 import com.kinandcarta.create.proxytoggle.model.Proxy
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyManagerEvent
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyState
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_ADDRESS
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_PORT
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
@@ -21,11 +23,6 @@ class ProxyManagerViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
-
-    companion object {
-        private const val ADDRESS = "1.2.3.4"
-        private const val PORT = "515"
-    }
 
     @RelaxedMockK
     private lateinit var mockDeviceSettingsManager: DeviceSettingsManager
@@ -66,17 +63,17 @@ class ProxyManagerViewModelTest {
 
     @Test
     fun `enableProxy() - calls the DeviceSettingsManager and proxyState is updated`() {
-        subject.enableProxy(ADDRESS, PORT)
+        subject.enableProxy(PROXY_ADDRESS, PROXY_PORT)
 
-        verify { mockDeviceSettingsManager.enableProxy(Proxy(ADDRESS, PORT)) }
-        assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Enabled(ADDRESS, PORT))
+        verify { mockDeviceSettingsManager.enableProxy(Proxy(PROXY_ADDRESS, PROXY_PORT)) }
+        assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Enabled(PROXY_ADDRESS, PROXY_PORT))
     }
 
     @Test
     fun `enableProxy() - invalid address triggers event and proxyState is Disconnected`() {
-        every { mockProxyValidator.isValidIP(ADDRESS) } returns false
+        every { mockProxyValidator.isValidIP(PROXY_ADDRESS) } returns false
 
-        subject.enableProxy(ADDRESS, PORT)
+        subject.enableProxy(PROXY_ADDRESS, PROXY_PORT)
 
         verify { mockDeviceSettingsManager wasNot Called }
         assertThat(subject.proxyEvent.awaitValue()).isEqualTo(ProxyManagerEvent.InvalidAddress)
@@ -85,9 +82,9 @@ class ProxyManagerViewModelTest {
 
     @Test
     fun `enableProxy() - invalid port triggers event and proxyState is Disconnected`() {
-        every { mockProxyValidator.isValidPort(PORT) } returns false
+        every { mockProxyValidator.isValidPort(PROXY_PORT) } returns false
 
-        subject.enableProxy(ADDRESS, PORT)
+        subject.enableProxy(PROXY_ADDRESS, PROXY_PORT)
 
         verify { mockDeviceSettingsManager wasNot Called }
         assertThat(subject.proxyEvent.awaitValue()).isEqualTo(ProxyManagerEvent.InvalidPort)
