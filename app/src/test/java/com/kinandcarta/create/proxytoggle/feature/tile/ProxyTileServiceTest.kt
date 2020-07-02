@@ -38,6 +38,18 @@ class ProxyTileServiceTest {
     }
 
     @Test
+    fun `onClick() - GIVEN I have no proxy set up WHEN I click the tile THEN the proxy enables AND the tile is updated`() {
+        every { mockDeviceSettingsManager.proxySetting } returns mockk {
+            every { value } returns null andThen PROXY
+        }
+
+        subject.onClick()
+
+        verify { mockDeviceSettingsManager.enableProxy(PROXY) }
+        verifyTileIsEnabled(PROXY.toString())
+    }
+
+    @Test
     fun `onClick() - GIVEN the proxy is disabled WHEN I click the tile THEN the proxy enables AND the tile is updated`() {
         every { mockDeviceSettingsManager.proxySetting } returns mockk {
             every { value } returns Proxy.Disabled andThen PROXY
@@ -58,6 +70,17 @@ class ProxyTileServiceTest {
         subject.onClick()
 
         verify { mockDeviceSettingsManager.disableProxy() }
+        verifyTileIsDisabled()
+    }
+
+    @Test
+    fun `onStartListening() - GIVEN I have no proxy set up THEN the tile updates to disabled state`() {
+        every { mockDeviceSettingsManager.proxySetting } returns mockk {
+            every { value } returns null
+        }
+
+        subject.onStartListening()
+
         verifyTileIsDisabled()
     }
 
