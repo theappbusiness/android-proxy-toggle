@@ -11,6 +11,7 @@ junitJacoco {
             "**/*ModuleDeps*",
             "**/*_Factory*",
             "**/*_AssistedFactory*",
+            "**/*_MembersInjector*",
             // ViewBinding
             "**/databinding/*.*",
             // Custom
