@@ -1,5 +1,2 @@
 rootProject.name = "ProxyToggle"
-include ':app',
-        ':feature-proxy-manager',
-        ':feature-widget',
-        ':lib-core'
+include ':app'

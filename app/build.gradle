@@ -1,21 +1,81 @@
 plugins {
     id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
-apply from: rootProject.file("buildScripts/common.gradle")
-
 android {
+    compileSdkVersion 29
+    buildToolsVersion "30.0.0"
+
     defaultConfig {
         applicationId "com.kinandcarta.create.proxytoggle"
         versionCode 1
         versionName "1.0"
 
+        minSdkVersion 21
+        targetSdkVersion 29
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
+    androidExtensions {
+        experimental = true
+    }
+
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 }
 
-
 dependencies {
-    implementation project("::feature-proxy-manager")
-    implementation project("::feature-widget")
+    implementation Libs.kotlin_stdlib
+    implementation Libs.core_ktx
+    implementation Libs.fragment_ktx
+    implementation Libs.lifecycle_livedata_ktx
+    implementation Libs.lifecycle_viewmodel_ktx
+    implementation Libs.appcompat
+    implementation Libs.material
+    implementation Libs.constraintlayout
+
+    implementation Libs.hilt_android
+    kapt Libs.hilt_android_compiler
+
+    implementation Libs.hilt_lifecycle_viewmodel
+    kapt Libs.hilt_compiler
+
+    testImplementation Libs.junit_junit
+    testImplementation Libs.androidx_test_ext_junit
+    testImplementation Libs.androidx_test_core
+    testImplementation Libs.core_testing
+    testImplementation Libs.mockk
+    testImplementation Libs.robolectric
+    testImplementation Libs.truth
+
+    androidTestImplementation Libs.androidx_test_ext_junit
+    androidTestImplementation Libs.espresso_core
 }
+
+preBuild.dependsOn('detekt')
