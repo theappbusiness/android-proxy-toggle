@@ -13,6 +13,7 @@ buildscript {
         classpath Libs.de_fayard_buildsrcversions_gradle_plugin
         classpath Libs.detekt_gradle_plugin
         classpath Libs.hilt_android_gradle_plugin
+        classpath Libs.gradle_android_junit_jacoco_plugin
     }
 }
 
