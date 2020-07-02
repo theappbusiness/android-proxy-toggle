@@ -1,4 +1,4 @@
-package com.kinandcarta.create.proxytoggle.viewmodel
+package com.kinandcarta.create.proxytoggle.feature.manager.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
@@ -6,8 +6,8 @@ import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.awaitValue
 import com.kinandcarta.create.proxytoggle.model.Proxy
-import com.kinandcarta.create.proxytoggle.view.manager.ProxyManagerEvent
-import com.kinandcarta.create.proxytoggle.view.manager.ProxyState
+import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyManagerEvent
+import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyState
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK

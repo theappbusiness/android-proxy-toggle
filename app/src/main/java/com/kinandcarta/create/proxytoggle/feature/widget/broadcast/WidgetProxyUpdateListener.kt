@@ -1,16 +1,17 @@
-package com.kinandcarta.create.proxytoggle.broadcast
+package com.kinandcarta.create.proxytoggle.feature.widget.broadcast
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import com.kinandcarta.create.proxytoggle.widget.ToggleWidgetProvider
+import com.kinandcarta.create.proxytoggle.broadcast.ProxyUpdateListener
+import com.kinandcarta.create.proxytoggle.feature.widget.ToggleWidgetProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class WidgetProxyUpdateListener @Inject constructor(
     @ApplicationContext private val context: Context
-) : com.kinandcarta.create.proxytoggle.broadcast.ProxyUpdateListener {
+) : ProxyUpdateListener {
 
     override fun onProxyUpdate() {
         val intent = Intent(context, ToggleWidgetProvider::class.java).apply {

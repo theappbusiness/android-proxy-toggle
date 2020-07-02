@@ -1,4 +1,4 @@
-package com.kinandcarta.create.proxytoggle.widget
+package com.kinandcarta.create.proxytoggle.feature.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager

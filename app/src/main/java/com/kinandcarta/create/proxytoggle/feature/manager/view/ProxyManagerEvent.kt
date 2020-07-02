@@ -1,4 +1,4 @@
-package com.kinandcarta.create.proxytoggle.view.manager
+package com.kinandcarta.create.proxytoggle.feature.manager.view
 
 sealed class ProxyManagerEvent {
     object InvalidAddress : ProxyManagerEvent()

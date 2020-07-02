@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".widget.ToggleWidgetProvider">
+        <receiver android:name=".feature.widget.ToggleWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.ACTION_WIDGET_RECEIVER" />
