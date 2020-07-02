@@ -29,6 +29,7 @@ class ProxyTileService : TileService() {
         if (proxy.isEnabled) {
             deviceSettingsManager.disableProxy()
         } else {
+            // TODO Take this from SharedPrefs once the user is able to input
             deviceSettingsManager.enableProxy(Proxy("192.168.1.215", "8888"))
         }
         updateTile()
