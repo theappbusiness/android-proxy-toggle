@@ -35,6 +35,10 @@ android {
         unitTests.includeAndroidResources = true
     }
 
+    hilt {
+        enableTransformForLocalTests = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -75,6 +79,8 @@ dependencies {
     testImplementation Libs.mockk
     testImplementation Libs.robolectric
     testImplementation Libs.truth
+    testImplementation Libs.hilt_android_testing
+    kaptTest Libs.hilt_android_compiler
 
     androidTestImplementation Libs.androidx_test_ext_junit
     androidTestImplementation Libs.espresso_core
