@@ -1,39 +1,64 @@
 package com.kinandcarta.create.proxytoggle.feature.tile
 
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.service.quicksettings.Tile
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.model.Proxy
+import com.kinandcarta.create.proxytoggle.settings.AppSettings
+import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY
+import com.kinandcarta.create.proxytoggle.view.MainActivity
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
+@RunWith(AndroidJUnit4::class)
+@Config(sdk = [Build.VERSION_CODES.P])
 class ProxyTileServiceTest {
-
-    companion object {
-        // TODO Change this when we have valid input data from user
-        private val PROXY = Proxy("192.168.1.215", "8888")
-    }
 
     @RelaxedMockK
     lateinit var mockDeviceSettingsManager: DeviceSettingsManager
 
     @RelaxedMockK
+    lateinit var mockAppSettings: AppSettings
+
+    @RelaxedMockK
     lateinit var mockTile: Tile
 
+    @RelaxedMockK
+    lateinit var mockContext: Context
+
     private lateinit var subject: ProxyTileService
+
+    private val intent = slot<Intent>()
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+
+        mockkStatic(MainActivity::class)
+
+        every { mockAppSettings.lastUsedProxy } returns PROXY
+
         subject = spyk(ProxyTileService()) {
             deviceSettingsManager = mockDeviceSettingsManager
+            appSettings = mockAppSettings
+            every { baseContext } returns mockContext
             every { qsTile } returns mockTile
+            every { startActivityAndCollapse(capture(intent)) } returns Unit
         }
     }
 
@@ -59,6 +84,22 @@ class ProxyTileServiceTest {
 
         verify { mockDeviceSettingsManager.enableProxy(PROXY) }
         verifyTileIsEnabled(PROXY.toString())
+    }
+
+    @Test
+    fun `onClick() - GIVEN the proxy is disabled AND I don't have a last used proxy WHEN I click the tile THEN the MainActivity is launched`() {
+        every { mockDeviceSettingsManager.proxySetting } returns mockk {
+            every { value } returns Proxy.Disabled
+        }
+
+        every { mockAppSettings.lastUsedProxy } returns Proxy.Disabled
+
+        subject.onClick()
+
+        verify(exactly = 0) { mockDeviceSettingsManager.enableProxy(any()) }
+        verifyTileIsDisabled()
+        val expectedIntent = MainActivity.getIntent(mockContext)
+        assertThat(intent.captured.toUri(0)).isEqualTo(expectedIntent.toUri(0))
     }
 
     @Test
