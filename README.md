@@ -15,7 +15,7 @@ Small application to help Android and Test Engineers to quickly enable/disable g
 ## Setup
 
 No special setup required. Just clone the repository and it should build out of the box.
-At the moment of writing this, the project is being created using Android Studio 4.2 Canary 2.
+At the moment of writing this, the project is being created using Android Studio 4.2 Canary 3.
 
 ## About the app
 
@@ -38,7 +38,8 @@ Each ViewModel must be injected using `@ViewModelInject` in order to be provided
 ### Testing
 
 We use Github Actions to execute all Unit Tests in the project for every PR against the `main` branch.
-JaCoCo is setup to run test coverage.
+JaCoCo is setup to run test coverage. We should aim to increase test coverage on each PR.
+At the moment of writing this, Hilt and JaCoCo are not totally compatible, so the total coverage shown is not accurate.
 
 ### Features
 
