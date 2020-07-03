@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.kinandcarta.create.proxytoggle.extensions.asLiveData
 import com.kinandcarta.create.proxytoggle.model.Proxy
 import com.kinandcarta.create.proxytoggle.model.ProxyMapper
+import com.kinandcarta.create.proxytoggle.settings.AppSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,7 +15,8 @@ import javax.inject.Singleton
 class DeviceSettingsManager @Inject constructor(
     @ApplicationContext context: Context,
     private val proxyMapper: ProxyMapper,
-    private val proxyUpdateNotifier: ProxyUpdateNotifier
+    private val proxyUpdateNotifier: ProxyUpdateNotifier,
+    private val appSettings: AppSettings
 ) {
 
     private val contentResolver by lazy { context.contentResolver }
@@ -32,6 +34,7 @@ class DeviceSettingsManager @Inject constructor(
             Settings.Global.HTTP_PROXY,
             proxy.toString()
         )
+        appSettings.lastUsedProxy = proxy
         updateProxyData()
     }
 
