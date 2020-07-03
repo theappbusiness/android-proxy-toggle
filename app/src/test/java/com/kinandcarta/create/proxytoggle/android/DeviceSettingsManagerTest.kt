@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.model.Proxy
 import com.kinandcarta.create.proxytoggle.model.ProxyMapper
+import com.kinandcarta.create.proxytoggle.settings.AppSettings
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_DISABLED
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.VALID_PROXY
@@ -32,6 +33,9 @@ class DeviceSettingsManagerTest {
     @RelaxedMockK
     private lateinit var mockProxyUpdateNotifier: ProxyUpdateNotifier
 
+    @RelaxedMockK
+    private lateinit var mockAppSettings: AppSettings
+
     private val context = ApplicationProvider.getApplicationContext<Context>()
 
     private lateinit var subject: DeviceSettingsManager
@@ -44,12 +48,12 @@ class DeviceSettingsManagerTest {
         every { mockProxyMapper.from(PROXY_DISABLED) } returns Proxy.Disabled
         every { mockProxyMapper.from(null) } returns Proxy.Disabled
 
-        subject = DeviceSettingsManager(context, mockProxyMapper, mockProxyUpdateNotifier)
+        subject = DeviceSettingsManager(context, mockProxyMapper, mockProxyUpdateNotifier, mockAppSettings)
     }
 
     @After
     fun tearDown() {
-        confirmVerified(mockProxyUpdateNotifier)
+        confirmVerified(mockProxyUpdateNotifier, mockAppSettings)
     }
 
     @Test
@@ -59,11 +63,14 @@ class DeviceSettingsManagerTest {
     }
 
     @Test
-    fun `enableProxy() - applies given proxy and proxySetting is updated`() {
+    fun `enableProxy() - applies given proxy and proxySetting is updated and proxy is stored`() {
         subject.enableProxy(PROXY)
 
         assertThat(subject.proxySetting.value).isEqualTo(PROXY)
-        verify { mockProxyUpdateNotifier.notifyProxyChanged() }
+        verify {
+            mockProxyUpdateNotifier.notifyProxyChanged()
+            mockAppSettings.lastUsedProxy = PROXY
+        }
     }
 
     @Test

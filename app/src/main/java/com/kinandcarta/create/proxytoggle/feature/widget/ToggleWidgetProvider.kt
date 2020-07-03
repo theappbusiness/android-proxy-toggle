@@ -5,11 +5,14 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.view.View
 import android.widget.RemoteViews
 import com.kinandcarta.create.proxytoggle.R
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.model.Proxy
+import com.kinandcarta.create.proxytoggle.settings.AppSettings
+import com.kinandcarta.create.proxytoggle.view.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.internal.managers.BroadcastReceiverComponentManager
 import dagger.hilt.internal.UnsafeCasts
@@ -27,6 +30,9 @@ class ToggleWidgetProvider : AppWidgetProvider() {
 
     @Inject
     lateinit var deviceSettingsManager: DeviceSettingsManager
+
+    @Inject
+    lateinit var appSettings: AppSettings
 
     override fun onUpdate(
         context: Context,
@@ -82,15 +88,22 @@ class ToggleWidgetProvider : AppWidgetProvider() {
         )
 
         when (intent.action) {
-            ACTION_PROXY_ENABLE -> enableProxy()
+            ACTION_PROXY_ENABLE -> enableProxy(context)
             ACTION_PROXY_DISABLE -> disableProxy()
             else -> super.onReceive(context, intent)
         }
     }
 
-    private fun enableProxy() {
-        // TODO Take this from SharedPrefs once the user is able to input
-        deviceSettingsManager.enableProxy(Proxy("192.168.1.215", "8888"))
+    private fun enableProxy(context: Context) {
+        val lastUsedProxy = appSettings.lastUsedProxy
+        if (lastUsedProxy.isEnabled) {
+            deviceSettingsManager.enableProxy(lastUsedProxy)
+        } else {
+            // There is no last used Proxy, prompt the user to create one
+            context.startActivity(
+                MainActivity.getIntent(context).apply { flags = FLAG_ACTIVITY_NEW_TASK }
+            )
+        }
     }
 
     private fun disableProxy() {

@@ -6,6 +6,8 @@ import android.service.quicksettings.TileService
 import androidx.annotation.RequiresApi
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.model.Proxy
+import com.kinandcarta.create.proxytoggle.settings.AppSettings
+import com.kinandcarta.create.proxytoggle.view.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -15,6 +17,9 @@ class ProxyTileService : TileService() {
 
     @Inject
     lateinit var deviceSettingsManager: DeviceSettingsManager
+
+    @Inject
+    lateinit var appSettings: AppSettings
 
     override fun onClick() {
         toggleProxy()
@@ -29,8 +34,13 @@ class ProxyTileService : TileService() {
         if (proxy.isEnabled) {
             deviceSettingsManager.disableProxy()
         } else {
-            // TODO Take this from SharedPrefs once the user is able to input
-            deviceSettingsManager.enableProxy(Proxy("192.168.1.215", "8888"))
+            val lastUsedProxy = appSettings.lastUsedProxy
+            if (lastUsedProxy.isEnabled) {
+                deviceSettingsManager.enableProxy(lastUsedProxy)
+            } else {
+                // There is no last used Proxy, prompt the user to create one
+                startActivityAndCollapse(MainActivity.getIntent(baseContext))
+            }
         }
         updateTile()
     }
