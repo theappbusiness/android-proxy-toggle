@@ -12,7 +12,15 @@ Small application to help Android and Test Engineers to quickly enable/disable g
 **It's everyone's responsibility to keep this document up to date as part of each release, or if you find something that needs updating.**
 
 
-## Setup
+## App installation
+
+If you're only interested in using the app, you can grab the [latest release](https://github.com/theappbusiness/android-proxy-toggle/releases/latest), connect your device and execute the installation script from your Terminal:
+
+```bash
+./installAndGrantPermission.sh
+```
+
+## Project setup
 
 No special setup required. Just clone the repository and it should build out of the box.
 At the moment of writing this, the project is being created using Android Studio 4.2 Canary 3.
