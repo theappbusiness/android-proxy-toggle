@@ -51,7 +51,25 @@ At the moment of writing this, Hilt and JaCoCo are not totally compatible, so th
 
 ### Features
 
-#### WRITE_SECURE_SETTINGS permission
+#### Quick proxy setup
+
+TODO: Add image here
+
+Easy setup: just add your desired IP and port, enable the proxy and _voilà!_, all done, your whole device will be proxied.
+
+#### Home Screen Widget
+
+The app features a Home Screen widget that the user can use to quickly toggle the proxy with the last used setup, without having to even open the app.
+It will also allow the user to launch the app to configure the proxy settings, if needed.
+
+#### Quick Setting Tile
+
+Similarly to the widget, Android 7.0 and above users will have the option to add a Quick Settings Tile in their Notification Drawer.
+This tile will allow the users to toggle the proxy even without having to leave the current application they are using.
+
+## Caveats
+
+### WRITE_SECURE_SETTINGS permission
 
 The app will make use of [Settings.Global](https://developer.android.com/reference/android/provider/Settings.Global). Since this is a system setting, it's normally a read-only setting.
 This small inconvenience is bypassed by granting the app `WRITE_SECURE_SETTINGS` special permission.
@@ -66,15 +84,21 @@ adb shell pm grant com.kinandcarta.create.proxytoggle android.permission.WRITE_S
 
 Alternatively, you can grant the permission when installing the app via the command `adb install -g App.apk` or just use the provided `installAndGrantPermission.sh` script.
 
-#### Home Screen Widget
+### Be careful when uninstalling the app
 
-The app features a Home Screen widget that the user can use to quickly toggle the proxy with the last used setup, without having to even open the app.
-It will also allow the user to launch the app to configure the proxy settings, if needed.
+Uninstalling the app with the proxy enabled will permanently leave your device with this setup (as it's a Settings.Global configuration!). 
 
-#### Quick Setting Tile
+> You should make sure the proxy is disabled before uninstalling the app!
 
-Similarly to the widget, Android 7.0 and above users will have the option to add a Quick Settings Tile in their Notification Drawer.
-This tile will allow the users to toggle the proxy even without having to leave the current application they are using.
+Since we can't guarantee this is going to happen, we also provide the `uninstallAndCleanUp.sh` script for making sure everything is in a clean state after uninstalling the app.
+
+Alternatively, you could run the following commands on your Terminal to clean up the proxy setting:
+
+```bash
+adb shell settings delete global http_proxy
+adb shell settings delete global global_http_proxy_host
+adb shell settings delete global global_http_proxy_port
+```
 
 ## License
 
