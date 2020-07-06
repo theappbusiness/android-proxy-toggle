@@ -8,5 +8,4 @@ then
     exit
 fi
 
-adb install -t -r proxy-toggle.apk
-adb shell pm grant com.kinandcarta.create.proxytoggle android.permission.WRITE_SECURE_SETTINGS
+adb install -t -r -g proxy-toggle.apk

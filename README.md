@@ -51,18 +51,20 @@ At the moment of writing this, Hilt and JaCoCo are not totally compatible, so th
 
 ### Features
 
-#### DeviceSettingsManager
+#### WRITE_SECURE_SETTINGS permission
 
-This class will use [Settings.Global](https://developer.android.com/reference/android/provider/Settings.Global). Since this is a system setting, we are allowed to read these settings, but we're not allowed to write them.
-This small inconvenience is bypassed by granting the app `WRITE_SECURE_SETTINGS` permissions.
+The app will make use of [Settings.Global](https://developer.android.com/reference/android/provider/Settings.Global). Since this is a system setting, it's normally a read-only setting.
+This small inconvenience is bypassed by granting the app `WRITE_SECURE_SETTINGS` special permission.
 
-> Note: this is a protected permission that only System apps should be granted. Be extra careful when you grant these permissions for unknown sources apps.
+> Note: this is a protected permission that only System apps should be granted. Be extra careful when you grant this permission for unknown sources apps.
 
-In order to gran these permissions, every time you install the application, connect the device to your computer and execute the following command:
+In order to grant this permission once the app is installed, connect the device to your computer and execute the following command on your Terminal:
 
-```
+```bash
 adb shell pm grant com.kinandcarta.create.proxytoggle android.permission.WRITE_SECURE_SETTINGS
 ```
+
+Alternatively, you can grant the permission when installing the app via the command `adb install -g App.apk` or just use the provided `installAndGrantPermission.sh` script.
 
 #### Home Screen Widget
 
