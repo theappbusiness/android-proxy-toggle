@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Proxy Toggle</string>
+    <string name="dialog_title_special_permissions">Special permissions required</string>
+    <string name="dialog_message_special_permissions">This app needs special permissions that can only be granted by connecting this device to your computer and running a command from Terminal. You can find out how in the README.</string>
 </resources>
