@@ -5,13 +5,13 @@ import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.appcompat.app.AppCompatDelegate
 import com.kinandcarta.create.proxytoggle.settings.AppSettings
-import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 
 @ActivityScoped
 class ThemeSwitcher @Inject constructor(
-    @ApplicationContext context: Context,
+    @ActivityContext context: Context,
     private val appSettings: AppSettings
 ) {
 
