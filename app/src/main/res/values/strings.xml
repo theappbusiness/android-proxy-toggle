@@ -8,4 +8,6 @@
     <string name="hint_port">Port</string>
     <string name="error_invalid_port">Please enter a valid port</string>
     <string name="error_invalid_address">Please enter a valid IP address</string>
+    <string name="dialog_message_information">Uninstalling the app with the proxy enabled will permanently leave your device with this setup.\n\nMake sure the proxy is disabled before uninstalling the app!</string>
+    <string name="dialog_action_close">Close</string>
 </resources>

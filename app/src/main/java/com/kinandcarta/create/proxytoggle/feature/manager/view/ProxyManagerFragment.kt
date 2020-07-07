@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -22,6 +23,8 @@ class ProxyManagerFragment : Fragment() {
     private val binding by lazy { FragmentProxyManagerBinding.inflate(layoutInflater) }
     private val viewModel: ProxyManagerViewModel by viewModels()
 
+    private var dialog: AlertDialog? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,6 +33,8 @@ class ProxyManagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.info.requestFocusFromTouch()
+        binding.info.setOnClickListener { showInfoDialog() }
         viewModel.proxyState.observe(viewLifecycleOwner, Observer { proxyState ->
             when (proxyState) {
                 is ProxyState.Enabled -> showProxyEnabled(proxyState.address, proxyState.port)
@@ -101,5 +106,13 @@ class ProxyManagerFragment : Fragment() {
             inputLayoutAddress.error = null
             inputLayoutPort.error = null
         }
+    }
+
+    private fun showInfoDialog() {
+        dialog?.dismiss()
+        dialog = AlertDialog.Builder(requireContext())
+            .setMessage(R.string.dialog_message_information)
+            .setPositiveButton(getString(R.string.dialog_action_close)) { _, _ -> }
+            .show()
     }
 }

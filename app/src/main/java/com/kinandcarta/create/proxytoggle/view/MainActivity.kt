@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
             .setTitle(getString(R.string.dialog_title_special_permissions))
             .setMessage(getString(R.string.dialog_message_special_permissions))
             .setCancelable(false)
-            .create()
             .show()
     }
 
