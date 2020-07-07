@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Icon">
+        <item name="android:layout_margin">@dimen/default_margin</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:tint">@color/info_icon</item>
+    </style>
+</resources>
