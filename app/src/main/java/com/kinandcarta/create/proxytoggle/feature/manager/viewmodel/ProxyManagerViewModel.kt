@@ -9,10 +9,12 @@ import com.kinandcarta.create.proxytoggle.extensions.SingleLiveEvent
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyManagerEvent
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyState
 import com.kinandcarta.create.proxytoggle.model.Proxy
+import com.kinandcarta.create.proxytoggle.settings.AppSettings
 
 class ProxyManagerViewModel @ViewModelInject constructor(
     private val deviceSettingsManager: DeviceSettingsManager,
-    private val proxyValidator: ProxyValidator
+    private val proxyValidator: ProxyValidator,
+    private val appSettings: AppSettings
 ) : ViewModel() {
 
     val proxyEvent = SingleLiveEvent<ProxyManagerEvent>()
@@ -22,6 +24,9 @@ class ProxyManagerViewModel @ViewModelInject constructor(
             ProxyState.Enabled(proxy.address, proxy.port)
         } else ProxyState.Disabled()
     }
+
+    val lastUsedProxy: Proxy
+        get() = appSettings.lastUsedProxy
 
     fun enableProxy(address: String, port: String) {
         when {

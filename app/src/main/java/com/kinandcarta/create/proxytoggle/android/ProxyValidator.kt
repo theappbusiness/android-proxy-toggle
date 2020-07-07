@@ -12,5 +12,5 @@ class ProxyValidator @Inject constructor() {
 
     fun isValidIP(input: String) = PatternsCompat.IP_ADDRESS.matcher(input).matches()
 
-    fun isValidPort(input: String) = input.isDigitsOnly() && input.toInt() in 1..MAX_PORT
+    fun isValidPort(input: String) = input.isNotBlank() && input.isDigitsOnly() && input.toInt() in 1..MAX_PORT
 }
