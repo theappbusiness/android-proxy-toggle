@@ -33,14 +33,14 @@ class ProxyManagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.info.requestFocusFromTouch()
-        binding.info.setOnClickListener { showInfoDialog() }
-        viewModel.proxyState.observe(viewLifecycleOwner, Observer { proxyState ->
-            when (proxyState) {
-                is ProxyState.Enabled -> showProxyEnabled(proxyState.address, proxyState.port)
-                is ProxyState.Disabled -> showProxyDisabled()
-            }
-        })
+
+        setupIcons()
+
+        observeProxyState()
+        observeProxyEvent()
+    }
+
+    private fun observeProxyEvent() {
         viewModel.proxyEvent.observe(viewLifecycleOwner, Observer { proxyEvent ->
             hideErrors()
             when (proxyEvent) {
@@ -48,6 +48,31 @@ class ProxyManagerFragment : Fragment() {
                 is ProxyManagerEvent.InvalidPort -> showInvalidPortError()
             }
         })
+    }
+
+    private fun observeProxyState() {
+        viewModel.proxyState.observe(viewLifecycleOwner, Observer { proxyState ->
+            when (proxyState) {
+                is ProxyState.Enabled -> showProxyEnabled(proxyState.address, proxyState.port)
+                is ProxyState.Disabled -> showProxyDisabled()
+            }
+        })
+    }
+
+    @SuppressWarnings("MagicNumber")
+    private fun setupIcons() {
+        // Info icon
+        binding.info.setOnClickListener {
+            dialog?.dismiss()
+            dialog = AlertDialog.Builder(requireContext())
+                .setMessage(R.string.dialog_message_information)
+                .setPositiveButton(getString(R.string.dialog_action_close)) { _, _ -> }
+                .show()
+        }
+
+        // Theme mode icon
+//        binding.themeMode.extendTouchArea(20.px)
+        binding.themeMode.setOnClickListener { viewModel.toggleTheme() }
     }
 
     private fun showProxyEnabled(proxyAddress: String, proxyPort: String) {
@@ -106,13 +131,5 @@ class ProxyManagerFragment : Fragment() {
             inputLayoutAddress.error = null
             inputLayoutPort.error = null
         }
-    }
-
-    private fun showInfoDialog() {
-        dialog?.dismiss()
-        dialog = AlertDialog.Builder(requireContext())
-            .setMessage(R.string.dialog_message_information)
-            .setPositiveButton(getString(R.string.dialog_action_close)) { _, _ -> }
-            .show()
     }
 }
