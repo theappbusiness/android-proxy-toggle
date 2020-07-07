@@ -80,8 +80,8 @@ class ProxyManagerFragment : Fragment() {
             toggle.contentDescription = getString(R.string.a11y_enable_proxy)
             toggle.setOnClickListener {
                 viewModel.enableProxy(
-                    inputLayoutAddress.editText?.text?.toString() ?: "",
-                    inputLayoutPort.editText?.text?.toString() ?: ""
+                    inputLayoutAddress.editText?.text?.toString().orEmpty(),
+                    inputLayoutPort.editText?.text?.toString().orEmpty()
                 )
             }
         }
