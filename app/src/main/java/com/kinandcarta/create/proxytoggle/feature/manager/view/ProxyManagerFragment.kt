@@ -59,7 +59,6 @@ class ProxyManagerFragment : Fragment() {
         })
     }
 
-    @SuppressWarnings("MagicNumber")
     private fun setupIcons() {
         // Info icon
         binding.info.setOnClickListener {
@@ -71,7 +70,6 @@ class ProxyManagerFragment : Fragment() {
         }
 
         // Theme mode icon
-//        binding.themeMode.extendTouchArea(20.px)
         binding.themeMode.setOnClickListener { viewModel.toggleTheme() }
     }
 
