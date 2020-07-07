@@ -7,4 +7,18 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Brand colours -->
+    <color name="kc_purple">@color/purple_500</color>
+    <color name="kc_purple_light">@color/purple_200</color>
+    <color name="disabled_gray">#666</color>
+
+    <!-- General screen colours -->
+    <color name="screen_background">@color/white</color>
+    <color name="info_icon">@color/kc_purple_light</color>
+
+    <!-- Toggle button colours -->
+    <color name="toggle_glow_disabled">@color/disabled_gray</color>
+    <color name="toggle_glow_enabled">@color/kc_purple</color>
+    <color name="toggle_background">@color/screen_background</color>
 </resources>
