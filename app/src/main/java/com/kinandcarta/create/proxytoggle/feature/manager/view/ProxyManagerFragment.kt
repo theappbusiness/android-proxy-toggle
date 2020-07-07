@@ -54,6 +54,7 @@ class ProxyManagerFragment : Fragment() {
             inputLayoutPort.isEnabled = false
             status.text = getString(R.string.proxy_status_enabled)
             toggle.isActivated = true
+            toggle.contentDescription = getString(R.string.a11y_disable_proxy)
             toggle.setOnClickListener {
                 viewModel.disableProxy()
             }
@@ -71,6 +72,7 @@ class ProxyManagerFragment : Fragment() {
             inputLayoutPort.isEnabled = true
             status.text = getString(R.string.proxy_status_disabled)
             toggle.isActivated = false
+            toggle.contentDescription = getString(R.string.a11y_enable_proxy)
             toggle.setOnClickListener {
                 viewModel.enableProxy(
                     inputLayoutAddress.editText?.text?.toString() ?: "",
