@@ -4,10 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
+import com.kinandcarta.create.proxytoggle.android.ProxyValidator
 import com.kinandcarta.create.proxytoggle.awaitValue
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyManagerEvent
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyState
 import com.kinandcarta.create.proxytoggle.model.Proxy
+import com.kinandcarta.create.proxytoggle.settings.AppSettings
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_ADDRESS
 import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY_PORT
 import io.mockk.Called
@@ -34,7 +36,10 @@ class ProxyManagerViewModelTest {
     private lateinit var mockDeviceSettingsManager: DeviceSettingsManager
 
     @MockK
-    private lateinit var mockProxyValidator: com.kinandcarta.create.proxytoggle.android.ProxyValidator
+    private lateinit var mockProxyValidator: ProxyValidator
+
+    @MockK
+    private lateinit var mockAppSettings: AppSettings
 
     private val fakeLiveData = MutableLiveData(Proxy.Disabled)
 
@@ -59,19 +64,24 @@ class ProxyManagerViewModelTest {
         every { mockProxyValidator.isValidIP(any()) } returns true
         every { mockProxyValidator.isValidPort(any()) } returns true
 
-        subject = ProxyManagerViewModel(mockDeviceSettingsManager, mockProxyValidator)
+        subject =
+            ProxyManagerViewModel(mockDeviceSettingsManager, mockProxyValidator, mockAppSettings)
     }
 
     @After
     fun tearDown() {
-        confirmVerified(mockDeviceSettingsManager)
+        confirmVerified(mockDeviceSettingsManager, mockProxyValidator, mockAppSettings)
     }
 
     @Test
     fun `enableProxy() - calls the DeviceSettingsManager and proxyState is updated`() {
         subject.enableProxy(PROXY_ADDRESS, PROXY_PORT)
 
-        verify { mockDeviceSettingsManager.enableProxy(Proxy(PROXY_ADDRESS, PROXY_PORT)) }
+        verify {
+            mockDeviceSettingsManager.enableProxy(Proxy(PROXY_ADDRESS, PROXY_PORT))
+            mockProxyValidator.isValidIP(PROXY_ADDRESS)
+            mockProxyValidator.isValidPort(PROXY_PORT)
+        }
         assertThat(subject.proxyState.awaitValue()).isEqualTo(
             ProxyState.Enabled(
                 PROXY_ADDRESS,
@@ -86,7 +96,10 @@ class ProxyManagerViewModelTest {
 
         subject.enableProxy(PROXY_ADDRESS, PROXY_PORT)
 
-        verify { mockDeviceSettingsManager wasNot Called }
+        verify {
+            mockProxyValidator.isValidIP(PROXY_ADDRESS)
+            mockDeviceSettingsManager wasNot Called
+        }
         assertThat(subject.proxyEvent.awaitValue()).isEqualTo(ProxyManagerEvent.InvalidAddress)
         assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Disabled())
     }
@@ -97,7 +110,11 @@ class ProxyManagerViewModelTest {
 
         subject.enableProxy(PROXY_ADDRESS, PROXY_PORT)
 
-        verify { mockDeviceSettingsManager wasNot Called }
+        verify {
+            mockProxyValidator.isValidIP(PROXY_ADDRESS)
+            mockProxyValidator.isValidPort(PROXY_PORT)
+            mockDeviceSettingsManager wasNot Called
+        }
         assertThat(subject.proxyEvent.awaitValue()).isEqualTo(ProxyManagerEvent.InvalidPort)
         assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Disabled())
     }
@@ -108,5 +125,15 @@ class ProxyManagerViewModelTest {
 
         verify { mockDeviceSettingsManager.disableProxy() }
         assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Disabled())
+    }
+
+    @Test
+    fun `lastUsedProxy - fetch lastUsedProxy from appSettings`() {
+        every { mockAppSettings.lastUsedProxy } returns Proxy.Disabled
+
+        val result = subject.lastUsedProxy
+
+        verify { mockAppSettings.lastUsedProxy }
+        assertThat(result).isEqualTo(Proxy.Disabled)
     }
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/toggle_disabled" android:state_activated="false" />
+    <item android:drawable="@drawable/toggle_enabled" />
+</selector>

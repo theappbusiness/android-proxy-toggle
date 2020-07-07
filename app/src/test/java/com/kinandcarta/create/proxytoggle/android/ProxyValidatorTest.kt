@@ -19,6 +19,8 @@ class ProxyValidatorTest {
         private const val INVALID_PORT_ALPHA = "12ABC"
         private const val INVALID_PORT_MIN_RANGE = "0"
         private const val INVALID_PORT_MAX_RANGE = "99515"
+        private const val EMPTY = ""
+        private const val BLANK = " "
     }
 
     private val subject = ProxyValidator()
@@ -31,6 +33,16 @@ class ProxyValidatorTest {
     @Test
     fun `isValidIP() - GIVEN an invalid IP THEN return false`() {
         assertThat(subject.isValidIP(INVALID_ADDRESS)).isFalse()
+    }
+
+    @Test
+    fun `isValidIP() - GIVEN an empty IP THEN return false`() {
+        assertThat(subject.isValidIP(EMPTY)).isFalse()
+    }
+
+    @Test
+    fun `isValidIP() - GIVEN a blank IP THEN return false`() {
+        assertThat(subject.isValidIP(BLANK)).isFalse()
     }
 
     @Test
@@ -51,5 +63,15 @@ class ProxyValidatorTest {
     @Test
     fun `isValidPort() - GIVEN an alphanumeric port THEN return false`() {
         assertThat(subject.isValidPort(INVALID_PORT_ALPHA)).isFalse()
+    }
+
+    @Test
+    fun `isValidPort() - GIVEN an empty port THEN return false`() {
+        assertThat(subject.isValidPort(EMPTY)).isFalse()
+    }
+
+    @Test
+    fun `isValidPort() - GIVEN a blank port THEN return false`() {
+        assertThat(subject.isValidPort(BLANK)).isFalse()
     }
 }

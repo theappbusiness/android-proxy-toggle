@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a11y_information">Information</string>
+    <string name="a11y_enable_proxy">Enable proxy</string>
+    <string name="a11y_disable_proxy">Disable proxy</string>
+</resources>

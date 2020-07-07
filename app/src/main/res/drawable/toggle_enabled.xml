@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:centerColor="@color/toggle_glow_enabled"
+                android:endColor="@android:color/transparent"
+                android:gradientRadius="@dimen/toggle_gradient_radius"
+                android:startColor="@android:color/transparent"
+                android:type="radial" />
+            <padding
+                android:bottom="@dimen/toggle_gradient_padding"
+                android:left="@dimen/toggle_gradient_padding"
+                android:right="@dimen/toggle_gradient_padding"
+                android:top="@dimen/toggle_gradient_padding" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <size
+                android:width="@dimen/toggle_shape_size"
+                android:height="@dimen/toggle_shape_size" />
+            <solid android:color="@color/toggle_background" />
+        </shape>
+    </item>
+</layer-list>
