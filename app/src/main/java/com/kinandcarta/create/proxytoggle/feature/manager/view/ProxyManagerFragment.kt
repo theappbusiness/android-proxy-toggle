@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.kinandcarta.create.proxytoggle.R
 import com.kinandcarta.create.proxytoggle.databinding.FragmentProxyManagerBinding
 import com.kinandcarta.create.proxytoggle.feature.manager.viewmodel.ProxyManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,11 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class ProxyManagerFragment : Fragment() {
 
     companion object {
-        fun newInstance() =
-            ProxyManagerFragment()
-
-        const val FI_ADDRESS = "192.168.1.215"
-        const val FI_PORT = "8888"
+        fun newInstance() = ProxyManagerFragment()
     }
 
     private val binding by lazy { FragmentProxyManagerBinding.inflate(layoutInflater) }
@@ -43,22 +40,33 @@ class ProxyManagerFragment : Fragment() {
 
     private fun showProxyEnabled(proxyAddress: String, proxyPort: String) {
         with(binding) {
-            address.text = proxyAddress
-            port.text = proxyPort
-            status.text = "Enabled"
-            button.text = "Disable proxy"
-            button.setOnClickListener { viewModel.disableProxy() }
+            inputLayoutAddress.editText?.setText(proxyAddress)
+            inputLayoutPort.editText?.setText(proxyPort)
+            inputLayoutAddress.isEnabled = false
+            inputLayoutPort.isEnabled = false
+            status.text = getString(R.string.proxy_status_enabled)
+            toggle.isActivated = true
+            toggle.setOnClickListener {
+                viewModel.disableProxy()
+            }
         }
     }
 
     private fun showProxyDisabled() {
         with(binding) {
-            status.text = "Disabled"
-            button.text = "Enable proxy"
-            button.setOnClickListener {
+            val lastUsedProxy = viewModel.lastUsedProxy
+            if (lastUsedProxy.isEnabled) {
+                inputLayoutAddress.editText?.setText(lastUsedProxy.address)
+                inputLayoutPort.editText?.setText(lastUsedProxy.port)
+            }
+            inputLayoutAddress.isEnabled = true
+            inputLayoutPort.isEnabled = true
+            status.text = getString(R.string.proxy_status_disabled)
+            toggle.isActivated = false
+            toggle.setOnClickListener {
                 viewModel.enableProxy(
-                    FI_ADDRESS,
-                    FI_PORT
+                    inputLayoutAddress.editText?.text?.toString() ?: "",
+                    inputLayoutPort.editText?.text?.toString() ?: ""
                 )
             }
         }
