@@ -36,9 +36,17 @@ class ProxyManagerFragment : Fragment() {
                 is ProxyState.Disabled -> showProxyDisabled()
             }
         })
+        viewModel.proxyEvent.observe(viewLifecycleOwner, Observer { proxyEvent ->
+            hideErrors()
+            when (proxyEvent) {
+                is ProxyManagerEvent.InvalidAddress -> showInvalidAddressError()
+                is ProxyManagerEvent.InvalidPort -> showInvalidPortError()
+            }
+        })
     }
 
     private fun showProxyEnabled(proxyAddress: String, proxyPort: String) {
+        hideErrors()
         with(binding) {
             inputLayoutAddress.editText?.setText(proxyAddress)
             inputLayoutPort.editText?.setText(proxyPort)
@@ -69,6 +77,27 @@ class ProxyManagerFragment : Fragment() {
                     inputLayoutPort.editText?.text?.toString() ?: ""
                 )
             }
+        }
+    }
+
+    private fun showInvalidAddressError() {
+        binding.inputLayoutAddress.apply {
+            error = getString(R.string.error_invalid_address)
+            requestFocusFromTouch()
+        }
+    }
+
+    private fun showInvalidPortError() {
+        binding.inputLayoutPort.apply {
+            error = getString(R.string.error_invalid_port)
+            requestFocusFromTouch()
+        }
+    }
+
+    private fun hideErrors() {
+        with(binding) {
+            inputLayoutAddress.error = null
+            inputLayoutPort.error = null
         }
     }
 }
