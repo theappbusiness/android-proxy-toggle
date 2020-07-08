@@ -11,6 +11,9 @@
 
     <color name="primary">@color/vivid_purple</color>
 
+    <!-- Launcher icon -->
+    <color name="ic_launcher_background">@color/primary</color>
+
     <!-- General screen colours -->
     <color name="screen_background">@color/light_gray</color>
     <color name="info_icon">@color/primary</color>
