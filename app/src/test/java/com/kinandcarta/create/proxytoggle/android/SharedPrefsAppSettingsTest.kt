@@ -40,7 +40,7 @@ class SharedPrefsAppSettingsTest {
     }
 
     @Test
-    fun `getProxy() - fetches from sharedPrefs and maps the value`() {
+    fun `getLastUsedProxy() - fetches from sharedPrefs and maps the value`() {
         every { mockSharedPreferences.getString("proxy", any()) } returns VALID_PROXY
 
         val result = subject.lastUsedProxy
@@ -54,7 +54,7 @@ class SharedPrefsAppSettingsTest {
     }
 
     @Test
-    fun `setProxy() - stores in sharedPrefs the string version of the proxy`() {
+    fun `setLastUsedProxy() - stores in sharedPrefs the string version of the proxy`() {
         val string = slot<String>()
         every { mockSharedPreferences.edit { putString("proxy", capture(string)) } } returns Unit
 
@@ -65,5 +65,30 @@ class SharedPrefsAppSettingsTest {
             assertThat(string.captured).isEqualTo(VALID_PROXY)
         }
         confirmVerified(mockProxyMapper, mockSharedPreferences)
+    }
+
+    @Test
+    fun `getThemeMode() - fetches value from sharedPrefs`() {
+        every { mockSharedPreferences.getInt("theme", any()) } returns 515
+
+        val result = subject.themeMode
+
+        verify {
+            mockSharedPreferences.getInt("theme", any())
+            assertThat(result).isEqualTo(515)
+        }
+    }
+
+    @Test
+    fun `setThemeMode() - stores value in sharedPrefs`() {
+        val mode = slot<Int>()
+        every { mockSharedPreferences.edit { putInt("theme", capture(mode)) } } returns Unit
+
+        subject.themeMode = 515
+
+        verify {
+            mockSharedPreferences.edit { putInt("theme", any()) }
+            assertThat(mode.captured).isEqualTo(515)
+        }
     }
 }
