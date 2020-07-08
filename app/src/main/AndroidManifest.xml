@@ -23,6 +23,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
+            </intent-filter>
         </activity>
 
         <!-- Home Screen Widget -->
@@ -39,8 +42,7 @@
         <!-- Quick Settings Tile -->
         <service
             android:name=".feature.tile.ProxyTileService"
-            android:icon="@drawable/ic_proxy"
-            android:label="Custom Proxy"
+            android:icon="@drawable/ic_tile"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
 
             <intent-filter>

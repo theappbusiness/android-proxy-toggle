@@ -6,6 +6,7 @@ import android.os.Build
 import android.service.quicksettings.Tile
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.kinandcarta.create.proxytoggle.R
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.model.Proxy
 import com.kinandcarta.create.proxytoggle.settings.AppSettings
@@ -59,6 +60,7 @@ class ProxyTileServiceTest {
             every { baseContext } returns mockContext
             every { qsTile } returns mockTile
             every { startActivityAndCollapse(capture(intent)) } returns Unit
+            every { getString(R.string.no_proxy_tile) } returns "No proxy"
         }
     }
 
@@ -158,7 +160,7 @@ class ProxyTileServiceTest {
 
     private fun verifyTileIsDisabled() {
         verify {
-            mockTile.label = "Proxy Disabled"
+            mockTile.label = "No proxy"
             mockTile.state = Tile.STATE_INACTIVE
             mockTile.updateTile()
         }
