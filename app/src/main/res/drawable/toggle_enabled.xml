@@ -23,4 +23,12 @@
             <solid android:color="@color/toggle_background" />
         </shape>
     </item>
+    <item>
+        <inset
+            android:drawable="@drawable/ic_power"
+            android:insetLeft="@dimen/toggle_inset"
+            android:insetTop="@dimen/toggle_inset_small"
+            android:insetRight="@dimen/toggle_inset"
+            android:insetBottom="@dimen/toggle_inset" />
+    </item>
 </layer-list>
