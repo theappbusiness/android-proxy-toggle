@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Colour Palette -->
+    <color name="dark">#1c1a23</color>
+    <color name="dark_two">#28262e</color>
+    <color name="vivid_purple">#7f00ff</color>
+    <color name="periwinkle">#a080fb</color>
+    <color name="bluey_grey">#a0a0aa</color>
+    <color name="pale_grey">#f1f1f2</color>
+    <color name="light_gray">#f8f8f8</color>
 
-    <!-- Brand colours -->
-    <color name="kc_purple">@color/purple_500</color>
-    <color name="kc_purple_light">@color/purple_200</color>
-    <color name="disabled_gray">#666</color>
+    <color name="primary">@color/vivid_purple</color>
 
     <!-- General screen colours -->
-    <color name="screen_background">@color/white</color>
-    <color name="info_icon">@color/kc_purple_light</color>
+    <color name="screen_background">@color/light_gray</color>
+    <color name="info_icon">@color/primary</color>
 
     <!-- Toggle button colours -->
-    <color name="toggle_glow_disabled">@color/disabled_gray</color>
-    <color name="toggle_glow_enabled">@color/kc_purple</color>
     <color name="toggle_background">@color/screen_background</color>
+    <color name="toggle_glow_disabled">@color/bluey_grey</color>
+    <color name="toggle_glow_enabled">@color/primary</color>
+    <color name="toggle_icon_disabled">@color/bluey_grey</color>
+    <color name="toggle_icon_enabled">@color/primary</color>
+    <color name="toggle_text_disabled">@color/bluey_grey</color>
+    <color name="toggle_text_enabled">@color/primary</color>
 </resources>
