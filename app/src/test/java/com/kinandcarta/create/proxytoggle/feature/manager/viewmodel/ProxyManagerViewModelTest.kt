@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.android.ProxyValidator
+import com.kinandcarta.create.proxytoggle.android.ThemeSwitcher
 import com.kinandcarta.create.proxytoggle.awaitValue
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyManagerEvent
 import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyState
@@ -41,6 +42,9 @@ class ProxyManagerViewModelTest {
     @MockK
     private lateinit var mockAppSettings: AppSettings
 
+    @RelaxedMockK
+    private lateinit var mockThemeSwitcher: ThemeSwitcher
+
     private val fakeLiveData = MutableLiveData(Proxy.Disabled)
 
     private lateinit var subject: ProxyManagerViewModel
@@ -65,12 +69,22 @@ class ProxyManagerViewModelTest {
         every { mockProxyValidator.isValidPort(any()) } returns true
 
         subject =
-            ProxyManagerViewModel(mockDeviceSettingsManager, mockProxyValidator, mockAppSettings)
+            ProxyManagerViewModel(
+                mockDeviceSettingsManager,
+                mockProxyValidator,
+                mockAppSettings,
+                mockThemeSwitcher
+            )
     }
 
     @After
     fun tearDown() {
-        confirmVerified(mockDeviceSettingsManager, mockProxyValidator, mockAppSettings)
+        confirmVerified(
+            mockDeviceSettingsManager,
+            mockProxyValidator,
+            mockAppSettings,
+            mockThemeSwitcher
+        )
     }
 
     @Test
@@ -135,5 +149,12 @@ class ProxyManagerViewModelTest {
 
         verify { mockAppSettings.lastUsedProxy }
         assertThat(result).isEqualTo(Proxy.Disabled)
+    }
+
+    @Test
+    fun `toggleTheme() - delegates to themeSwitcher`() {
+        subject.toggleTheme()
+
+        verify { mockThemeSwitcher.toggleTheme() }
     }
 }

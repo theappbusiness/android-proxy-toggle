@@ -6,6 +6,16 @@
     android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/theme_mode"
+        style="@style/Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/a11y_switch_theme"
+        android:src="@drawable/ic_switch_theme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
         android:id="@+id/info"
         style="@style/Icon"
         android:layout_width="wrap_content"

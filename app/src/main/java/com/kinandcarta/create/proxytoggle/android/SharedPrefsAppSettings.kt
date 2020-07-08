@@ -1,6 +1,7 @@
 package com.kinandcarta.create.proxytoggle.android
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import com.kinandcarta.create.proxytoggle.model.Proxy
 import com.kinandcarta.create.proxytoggle.model.ProxyMapper
@@ -16,6 +17,7 @@ class SharedPrefsAppSettings @Inject constructor(
     companion object {
         private const val SHARED_PREF_NAME = "AppSettings"
         private const val PREF_PROXY = "proxy"
+        private const val PREF_THEME = "theme"
     }
 
     private val prefs by lazy {
@@ -25,4 +27,8 @@ class SharedPrefsAppSettings @Inject constructor(
     override var lastUsedProxy: Proxy
         get() = proxyMapper.from(prefs.getString(PREF_PROXY, null))
         set(value) = prefs.edit { putString(PREF_PROXY, value.toString()) }
+
+    override var themeMode: Int
+        get() = prefs.getInt(PREF_THEME, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        set(value) = prefs.edit { putInt(PREF_THEME, value) }
 }
