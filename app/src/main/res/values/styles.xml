@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Icon">
         <item name="android:layout_margin">@dimen/default_margin</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:tint">@color/info_icon</item>
+    </style>
+
+    <style name="StatusLabel">
+        <item name="android:fontFamily">@font/dmsans</item>
+        <item name="android:letterSpacing">0.2</item>
+        <item name="android:textColor">@color/toggle_text</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/status_label_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Input">
+        <item name="android:fontFamily">@font/dmsans</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textSize">@dimen/input_text_size</item>
     </style>
 </resources>
