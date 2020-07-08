@@ -26,8 +26,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/xlarge_margin"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,18 +39,20 @@
             android:id="@+id/toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/default_margin"
+            android:background="@drawable/toggle"
             android:contentDescription="@null"
-            android:src="@drawable/toggle" />
+            android:tint="@color/toggle_icon" />
 
         <TextView
             android:id="@+id/status"
+            style="@style/StatusLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/large_margin"
-            android:text="@string/proxy_status_disabled"
-            android:textAllCaps="true" />
+            android:text="@string/proxy_status_disabled" />
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -61,10 +64,10 @@
             android:hint="@string/hint_ip_address">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/Input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textUri"
-                android:maxLines="1" />
+                android:inputType="textUri" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -76,13 +79,12 @@
             android:hint="@string/hint_port">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/Input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLines="1" />
+                android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
