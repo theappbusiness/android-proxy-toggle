@@ -4,6 +4,7 @@ import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import androidx.annotation.RequiresApi
+import com.kinandcarta.create.proxytoggle.R
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.model.Proxy
 import com.kinandcarta.create.proxytoggle.settings.AppSettings
@@ -55,7 +56,7 @@ class ProxyTileService : TileService() {
             }
         } else {
             qsTile.apply {
-                label = "Proxy Disabled"
+                label = getString(R.string.no_proxy_tile)
                 state = Tile.STATE_INACTIVE
                 updateTile()
             }
