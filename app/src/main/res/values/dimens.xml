@@ -6,8 +6,8 @@
 
     <!-- Toggle button -->
     <dimen name="toggle_shape_size">160dp</dimen>
-    <dimen name="toggle_gradient_padding">15dp</dimen>
-    <dimen name="toggle_gradient_radius">95dp</dimen>
+    <dimen name="toggle_gradient_padding">20dp</dimen>
+    <dimen name="toggle_gradient_radius">100dp</dimen>
     <dimen name="toggle_inset">40dp</dimen>
     <dimen name="toggle_inset_small">30dp</dimen>
 
