@@ -2,9 +2,16 @@
 <resources>
     <dimen name="default_margin">16dp</dimen>
     <dimen name="large_margin">32dp</dimen>
+    <dimen name="xlarge_margin">48dp</dimen>
 
     <!-- Toggle button -->
-    <dimen name="toggle_gradient_padding">20dp</dimen>
-    <dimen name="toggle_gradient_radius">115dp</dimen>
-    <dimen name="toggle_shape_size">200dp</dimen>
+    <dimen name="toggle_shape_size">160dp</dimen>
+    <dimen name="toggle_gradient_padding">15dp</dimen>
+    <dimen name="toggle_gradient_radius">95dp</dimen>
+    <dimen name="toggle_inset">40dp</dimen>
+    <dimen name="toggle_inset_small">30dp</dimen>
+
+    <!-- Text sizes -->
+    <dimen name="status_label_text_size">12sp</dimen>
+    <dimen name="input_text_size">20sp</dimen>
 </resources>
