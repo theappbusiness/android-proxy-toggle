@@ -28,4 +28,8 @@
     <color name="toggle_icon_enabled">@color/primary</color>
     <color name="toggle_text_disabled">@color/bluey_grey</color>
     <color name="toggle_text_enabled">@color/primary</color>
+
+    <!-- Widget colours -->
+    <color name="widget_label_disabled">@color/pale_grey</color>
+    <color name="widget_label_enabled">@color/periwinkle</color>
 </resources>

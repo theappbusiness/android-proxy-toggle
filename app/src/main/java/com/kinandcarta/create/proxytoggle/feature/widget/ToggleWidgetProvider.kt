@@ -6,8 +6,8 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.view.View
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat
 import com.kinandcarta.create.proxytoggle.R
 import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.model.Proxy
@@ -20,8 +20,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class ToggleWidgetProvider : AppWidgetProvider() {
-
-    // TODO Handle the scenario when the user adds the widget before the proxy
 
     companion object {
         private const val ACTION_PROXY_ENABLE = "Enable Proxy"
@@ -51,16 +49,38 @@ class ToggleWidgetProvider : AppWidgetProvider() {
                 buildDisabledView(remoteView, context)
             }
 
+            remoteView.setOnClickPendingIntent(
+                R.id.settings,
+                PendingIntent.getActivity(
+                    context,
+                    0,
+                    MainActivity.getIntent(context).apply { flags = FLAG_ACTIVITY_NEW_TASK },
+                    0
+                )
+            )
+
             appWidgetManager.updateAppWidget(appWidgetId, remoteView)
         }
     }
 
     private fun buildDisabledView(remoteView: RemoteViews, context: Context) {
         remoteView.apply {
-            setTextViewText(R.id.button, "Enable")
-            setViewVisibility(R.id.proxy, View.GONE)
+            val lastUsedProxy = appSettings.lastUsedProxy
+            if (lastUsedProxy.isEnabled) {
+                setTextViewText(R.id.address, lastUsedProxy.address)
+                setTextViewText(R.id.port, lastUsedProxy.port)
+            } else {
+                setTextViewText(R.id.address, context.getString(R.string.widget_not_set))
+                setTextViewText(R.id.port, context.getString(R.string.widget_not_set))
+            }
+            setTextViewText(R.id.status, context.getString(R.string.proxy_status_disabled))
+            setTextColor(
+                R.id.status,
+                ContextCompat.getColor(context, R.color.widget_label_disabled)
+            )
+            setImageViewResource(R.id.toggle, R.drawable.widget_toggle_disabled)
             setOnClickPendingIntent(
-                R.id.button,
+                R.id.toggle,
                 ACTION_PROXY_ENABLE.asPendingIntent(context)
             )
         }
@@ -68,11 +88,13 @@ class ToggleWidgetProvider : AppWidgetProvider() {
 
     private fun buildEnabledView(remoteView: RemoteViews, proxy: Proxy, context: Context) {
         remoteView.apply {
-            setTextViewText(R.id.button, "Disable")
-            setViewVisibility(R.id.proxy, View.VISIBLE)
-            setTextViewText(R.id.proxy, proxy.toString())
+            setTextViewText(R.id.address, proxy.address)
+            setTextViewText(R.id.port, proxy.port)
+            setTextViewText(R.id.status, context.getString(R.string.proxy_status_enabled))
+            setTextColor(R.id.status, ContextCompat.getColor(context, R.color.widget_label_enabled))
+            setImageViewResource(R.id.toggle, R.drawable.widget_toggle_enabled)
             setOnClickPendingIntent(
-                R.id.button,
+                R.id.toggle,
                 ACTION_PROXY_DISABLE.asPendingIntent(context)
             )
         }
