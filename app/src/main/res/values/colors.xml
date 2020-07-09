@@ -2,6 +2,7 @@
 <resources>
     <!-- Colour Palette -->
     <color name="dark">#1c1a23</color>
+    <color name="dark_alpha">#CC1c1a23</color>
     <color name="dark_two">#28262e</color>
     <color name="vivid_purple">#7f00ff</color>
     <color name="periwinkle">#a080fb</color>
