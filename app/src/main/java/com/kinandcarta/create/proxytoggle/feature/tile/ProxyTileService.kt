@@ -1,5 +1,6 @@
 package com.kinandcarta.create.proxytoggle.feature.tile
 
+import android.content.Intent
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
@@ -40,7 +41,9 @@ class ProxyTileService : TileService() {
                 deviceSettingsManager.enableProxy(lastUsedProxy)
             } else {
                 // There is no last used Proxy, prompt the user to create one
-                startActivityAndCollapse(MainActivity.getIntent(baseContext))
+                startActivityAndCollapse(MainActivity.getIntent(baseContext).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                })
             }
         }
         updateTile()

@@ -14,4 +14,22 @@
     <!-- Text sizes -->
     <dimen name="status_label_text_size">12sp</dimen>
     <dimen name="input_text_size">20sp</dimen>
+
+    <!-- Widget settings -->
+    <dimen name="widget_min_width">230dp</dimen>
+    <dimen name="widget_min_height">40dp</dimen>
+    <dimen name="widget_min_resizable_width">180dp</dimen>
+    <dimen name="widget_min_resizable_height">40dp</dimen>
+
+    <!-- Widget dimens -->
+    <dimen name="widget_default_margin">4dp</dimen>
+    <dimen name="widget_xlarge_margin">8dp</dimen>
+    <dimen name="widget_outer_horizontal_padding">6dp</dimen>
+    <dimen name="widget_icon_margin">12dp</dimen>
+    <dimen name="widget_label_text_size">9sp</dimen>
+
+    <!-- Widget Toggle button -->
+    <dimen name="widget_toggle_icon_size">60dp</dimen>
+    <dimen name="widget_toggle_gradient_padding">40dp</dimen>
+    <dimen name="widget_toggle_gradient_radius">120dp</dimen>
 </resources>

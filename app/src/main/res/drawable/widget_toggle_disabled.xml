@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:centerColor="@color/toggle_glow_disabled"
+                android:endColor="@android:color/transparent"
+                android:gradientRadius="@dimen/widget_toggle_gradient_radius"
+                android:startColor="@android:color/transparent"
+                android:type="radial" />
+            <padding
+                android:bottom="@dimen/widget_toggle_gradient_padding"
+                android:left="@dimen/widget_toggle_gradient_padding"
+                android:right="@dimen/widget_toggle_gradient_padding"
+                android:top="@dimen/widget_toggle_gradient_padding" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <size
+                android:width="@dimen/toggle_shape_size"
+                android:height="@dimen/toggle_shape_size" />
+            <solid android:color="@color/widget_toggle_background" />
+        </shape>
+    </item>
+    <item>
+        <inset
+            android:drawable="@drawable/ic_power_widget_disabled"
+            android:insetLeft="@dimen/toggle_inset"
+            android:insetTop="@dimen/toggle_inset_small"
+            android:insetRight="@dimen/toggle_inset"
+            android:insetBottom="@dimen/toggle_inset" />
+    </item>
+</layer-list>
