@@ -49,14 +49,9 @@ class ToggleWidgetProvider : AppWidgetProvider() {
                 buildDisabledView(remoteView, context)
             }
 
+            val intent = MainActivity.getIntent(context).apply { flags = FLAG_ACTIVITY_NEW_TASK }
             remoteView.setOnClickPendingIntent(
-                R.id.settings,
-                PendingIntent.getActivity(
-                    context,
-                    0,
-                    MainActivity.getIntent(context).apply { flags = FLAG_ACTIVITY_NEW_TASK },
-                    0
-                )
+                R.id.settings, PendingIntent.getActivity(context, 0, intent, 0)
             )
 
             appWidgetManager.updateAppWidget(appWidgetId, remoteView)

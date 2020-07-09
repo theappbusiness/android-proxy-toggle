@@ -20,7 +20,7 @@
             <size
                 android:width="@dimen/toggle_shape_size"
                 android:height="@dimen/toggle_shape_size" />
-            <solid android:color="@color/dark" />
+            <solid android:color="@color/widget_toggle_background" />
         </shape>
     </item>
     <item>
