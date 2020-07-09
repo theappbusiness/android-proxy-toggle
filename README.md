@@ -56,8 +56,7 @@ At the moment of writing this, Hilt and JaCoCo are not totally compatible, so th
 #### Quick proxy setup
 
 
-<img src="screenshots/screenshot3.png" width="200" />
-<img src="screenshots/screenshot5.png" width="200" />
+<img src="screenshots/screenshot35.jpg" width="400" />
 
 
 Easy setup: just add your desired IP and port, enable the proxy and _voilà!_, all done, your whole device will be proxied.
