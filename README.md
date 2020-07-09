@@ -9,6 +9,8 @@ Small application to help Android and Test Engineers to quickly enable/disable g
 
 ---
 
+<img src="screenshots/animation1.gif" width="300" />
+
 **It's everyone's responsibility to keep this document up to date as part of each release, or if you find something that needs updating.**
 
 
@@ -53,16 +55,23 @@ At the moment of writing this, Hilt and JaCoCo are not totally compatible, so th
 
 #### Quick proxy setup
 
-TODO: Add image here
+
+<img src="screenshots/screenshot35.jpg" width="400" />
+
 
 Easy setup: just add your desired IP and port, enable the proxy and _voilà!_, all done, your whole device will be proxied.
 
 #### Home Screen Widget
 
+<img src="screenshots/screenshot1.png" width="200" />
+
 The app features a Home Screen widget that the user can use to quickly toggle the proxy with the last used setup, without having to even open the app.
 It will also allow the user to launch the app to configure the proxy settings, if needed.
 
 #### Quick Setting Tile
+
+<img src="screenshots/screenshot2.png" width="200" />
+
 
 Similarly to the widget, Android 7.0 and above users will have the option to add a Quick Settings Tile in their Notification Drawer.
 This tile will allow the users to toggle the proxy even without having to leave the current application they are using.

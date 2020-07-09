@@ -8,14 +8,18 @@ plugins {
 
 apply from: rootProject.file("jacoco.gradle")
 
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 0
+
 android {
     compileSdkVersion 29
     buildToolsVersion "30.0.0"
 
     defaultConfig {
         applicationId "com.kinandcarta.create.proxytoggle"
-        versionCode 1
-        versionName "1.0"
+        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
         minSdkVersion 21
         targetSdkVersion 29
