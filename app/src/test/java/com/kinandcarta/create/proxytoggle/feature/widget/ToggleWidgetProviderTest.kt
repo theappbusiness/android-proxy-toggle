@@ -66,6 +66,7 @@ class ToggleWidgetProviderTest {
 
         subject = ToggleWidgetProvider().apply {
             deviceSettingsManager = mockDeviceSettingsManager
+            appSettings = mockAppSettings
         }
     }
 
