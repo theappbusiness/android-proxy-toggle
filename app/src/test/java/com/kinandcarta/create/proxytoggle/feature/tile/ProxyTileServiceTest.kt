@@ -100,7 +100,9 @@ class ProxyTileServiceTest {
 
         verify(exactly = 0) { mockDeviceSettingsManager.enableProxy(any()) }
         verifyTileIsDisabled()
-        val expectedIntent = MainActivity.getIntent(mockContext)
+        val expectedIntent = MainActivity.getIntent(mockContext).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
         assertThat(intent.captured.toUri(0)).isEqualTo(expectedIntent.toUri(0))
     }
 
