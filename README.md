@@ -21,6 +21,14 @@ If you're only interested in using the app, you can grab the [latest release](ht
 ```bash
 ./installAndGrantPermission.sh
 ```
+### Android 5.x
+
+Because of old `adb` limitations, if you want to install the app in devices running Android 5.x, you must run two commands separately:
+
+```bash
+adb install -t -r proxy-toggle.apk
+adb shell pm grant com.kinandcarta.create.proxytoggle android.permission.WRITE_SECURE_SETTINGS
+```
 
 ## Project setup
 
