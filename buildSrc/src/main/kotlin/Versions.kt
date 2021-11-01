@@ -22,7 +22,7 @@ object Versions {
 
     const val androidx_hilt: String = "1.0.0-alpha01"
 
-    const val com_android_tools_build_gradle: String = "4.2.0-beta04"
+    const val com_android_tools_build_gradle: String = "4.2.0"
 
     const val androidx_test_ext_junit: String = "1.1.1"
 
@@ -42,11 +42,11 @@ object Versions {
 
     const val fragment_ktx: String = "1.2.5"
 
-    const val lint_gradle: String = "27.2.0-alpha02"
+    const val lint_gradle: String = "27.2.0"
 
     const val robolectric: String = "4.3.1"
 
-    const val viewbinding: String = "4.2.0-alpha02"
+    const val viewbinding: String = "4.2.0"
 
     const val appcompat: String = "1.1.0"
 
@@ -54,7 +54,7 @@ object Versions {
 
     const val material: String = "1.1.0"
 
-    const val aapt2: String = "4.2.0-alpha02-6567757"
+    const val aapt2: String = "4.2.0"
 
     const val mockk: String = "1.10.0"
 
