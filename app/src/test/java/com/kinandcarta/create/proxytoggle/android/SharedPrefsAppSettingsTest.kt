@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.google.common.truth.Truth.assertThat
-import com.kinandcarta.create.proxytoggle.model.ProxyMapper
-import com.kinandcarta.create.proxytoggle.stubs.Stubs.PROXY
-import com.kinandcarta.create.proxytoggle.stubs.Stubs.VALID_PROXY
+import com.kinandcarta.create.proxytoggle.core.model.ProxyMapper
+import com.kinandcarta.create.proxytoggle.core.stub.Stubs.PROXY
+import com.kinandcarta.create.proxytoggle.core.stub.Stubs.VALID_PROXY
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
 import io.mockk.every

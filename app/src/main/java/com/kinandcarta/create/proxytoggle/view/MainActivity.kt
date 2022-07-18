@@ -1,46 +1,76 @@
 package com.kinandcarta.create.proxytoggle.view
 
 import android.Manifest
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import com.kinandcarta.create.proxytoggle.R
-import com.kinandcarta.create.proxytoggle.feature.manager.view.ProxyManagerFragment
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kinandcarta.create.proxytoggle.core.theme.ProxyToggleTheme
+import com.kinandcarta.create.proxytoggle.manager.mapper.ProxyUiDataMapper
+import com.kinandcarta.create.proxytoggle.manager.view.composable.BlockAppScreen
+import com.kinandcarta.create.proxytoggle.manager.view.composable.ProxyManagerScreen
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(R.layout.main_activity) {
+class MainActivity : AppCompatActivity() {
 
-    companion object {
-        fun getIntent(context: Context) = Intent(context, MainActivity::class.java)
-    }
+    @Inject
+    lateinit var proxyUiDataMapper: ProxyUiDataMapper
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContent {
+            val heightSizeClass = calculateWindowSizeClass(this).heightSizeClass
+            val useVerticalLayout = heightSizeClass != WindowHeightSizeClass.Compact
 
-        when (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_SECURE_SETTINGS)) {
-            PackageManager.PERMISSION_DENIED -> showPermissionRequiredDialog()
-            PackageManager.PERMISSION_GRANTED -> showApplicationContent(savedInstanceState)
-        }
-    }
+            val viewModel: ProxyManagerViewModel = viewModel()
 
-    private fun showPermissionRequiredDialog() {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.dialog_title_special_permissions))
-            .setMessage(getString(R.string.dialog_message_special_permissions))
-            .setCancelable(false)
-            .show()
-    }
+            val darkTheme by viewModel.isNightMode.collectAsState()
+            val proxyEvent by viewModel.proxyEvent.observeAsState()
+            val proxyState by viewModel.proxyState.observeAsState()
 
-    private fun showApplicationContent(savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, ProxyManagerFragment.newInstance())
-                .commitNow()
+            val inputErrors = proxyUiDataMapper.getUserInputErrors(proxyEvent)
+            val activeProxyData = proxyUiDataMapper.getActiveProxyData(proxyState)
+            val lastProxyUsedData = proxyUiDataMapper.getLastProxyUsedData(viewModel.lastUsedProxy)
+
+            ProxyToggleTheme(darkTheme = darkTheme) {
+                when (
+                    ContextCompat.checkSelfPermission(
+                        LocalContext.current,
+                        Manifest.permission.WRITE_SECURE_SETTINGS
+                    )
+                ) {
+                    PackageManager.PERMISSION_DENIED -> BlockAppScreen()
+                    PackageManager.PERMISSION_GRANTED -> {
+                        ProxyManagerScreen(
+                            useVerticalLayout = useVerticalLayout,
+                            activeProxyData = activeProxyData,
+                            lastProxyUsedData = lastProxyUsedData,
+                            inputErrors = inputErrors,
+                            onToggleTheme = { viewModel.toggleTheme() },
+                            onToggleProxy = { ipAddress, port ->
+                                if (activeProxyData != null) {
+                                    viewModel.disableProxy()
+                                } else {
+                                    viewModel.enableProxy(ipAddress, port)
+                                }
+                            }
+                        )
+                    }
+                }
+            }
         }
     }
 }

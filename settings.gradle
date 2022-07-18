@@ -1,2 +1,16 @@
+plugins {
+    // See https://jmfayard.github.io/refreshVersions
+    id 'de.fayard.refreshVersions' version '0.40.2'
+}
+
+refreshVersions {
+    enableBuildSrcLibs()
+}
+
 rootProject.name = "ProxyToggle"
 include ':app'
+include ':core'
+include ':feature:manager'
+include ':feature:tile'
+include ':feature:widget'
+include ':test-utils'

@@ -3,9 +3,9 @@ package com.kinandcarta.create.proxytoggle.android
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
-import com.kinandcarta.create.proxytoggle.model.Proxy
-import com.kinandcarta.create.proxytoggle.model.ProxyMapper
-import com.kinandcarta.create.proxytoggle.settings.AppSettings
+import com.kinandcarta.create.proxytoggle.core.model.Proxy
+import com.kinandcarta.create.proxytoggle.core.model.ProxyMapper
+import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

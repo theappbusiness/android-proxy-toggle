@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="a11y_information">Information</string>
-    <string name="a11y_switch_theme">Switch theme</string>
-    <string name="a11y_enable_proxy">Enable proxy</string>
-    <string name="a11y_disable_proxy">Disable proxy</string>
-    <string name="a11y_settings">Open app settings</string>
-    <string name="a11y_toggle_proxy">Toggle proxy</string>
-</resources>

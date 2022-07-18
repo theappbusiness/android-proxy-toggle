@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/widget_background"
+    android:gravity="center_vertical"
+    android:minWidth="@dimen/widget_min_resizable_width"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/widget_outer_horizontal_padding"
+    android:paddingVertical="@dimen/widget_default_margin">
+
+    <ImageView
+        android:id="@+id/settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/a11y_settings"
+        android:src="@drawable/ic_settings" />
+
+    <ImageView
+        android:id="@+id/toggle"
+        android:layout_width="@dimen/widget_toggle_icon_size"
+        android:layout_height="@dimen/widget_toggle_icon_size"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/a11y_toggle_proxy"
+        android:src="@drawable/toggle"
+        tools:src="@drawable/widget_toggle_enabled" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/widget_icon_margin"
+        android:layout_toEndOf="@id/toggle"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/dmsans"
+            android:letterSpacing="0.2"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            tools:text="Enabled"
+            tools:textColor="@color/periwinkle" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/widget_default_margin"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/dmsans"
+                    android:text="@string/widget_label_ip_address"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/widget_label_text_size"
+                    tools:ignore="SmallSp" />
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/dmsans"
+                    android:textColor="@color/white"
+                    tools:text="10.10.5.15" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/widget_xlarge_margin"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/dmsans"
+                    android:text="@string/widget_label_port"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/widget_label_text_size"
+                    tools:ignore="SmallSp" />
+
+                <TextView
+                    android:id="@+id/port"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/dmsans"
+                    android:textColor="@color/white"
+                    tools:text="8888" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

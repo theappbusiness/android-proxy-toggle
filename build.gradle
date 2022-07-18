@@ -1,4 +1,4 @@
-apply plugin: "de.fayard.buildSrcVersions"
+import static de.fayard.refreshVersions.core.Versions.versionFor
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
@@ -10,10 +10,10 @@ buildscript {
     dependencies {
         classpath Libs.com_android_tools_build_gradle
         classpath Libs.kotlin_gradle_plugin
-        classpath Libs.de_fayard_buildsrcversions_gradle_plugin
         classpath Libs.detekt_gradle_plugin
+        classpath Libs.org_jacoco_core
         classpath Libs.hilt_android_gradle_plugin
-        classpath Libs.gradle_android_junit_jacoco_plugin
+        classpath Libs.paparazzi_gradle_plugin
     }
 }
 
@@ -26,9 +26,10 @@ allprojects {
 
 subprojects {
     apply plugin: "io.gitlab.arturbosch.detekt"
+    apply plugin: "jacoco"
 
     detekt {
-        toolVersion = Versions.io_gitlab_arturbosch_detekt
+        toolVersion = versionFor(Libs.detekt_gradle_plugin)
         config = files("$rootDir/detekt.yml")
         buildUponDefaultConfig = true
     }
@@ -41,3 +42,4 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
