@@ -20,6 +20,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.res.ResourcesCompat
 import com.kinandcarta.create.proxytoggle.core.theme.BlueyGrey
@@ -31,10 +35,20 @@ fun ProxyToggleButton(
     proxyEnabled: Boolean,
     onClick: () -> Unit
 ) {
-    IconButton(onClick = onClick) {
-        val resources = LocalContext.current.resources
-        val shadowStart = ResourcesCompat.getFloat(resources, R.dimen.toggle_shadow_start)
-        val shadowColor = if (proxyEnabled) MaterialTheme.colors.primary else BlueyGrey
+    val (stateDescription, actionDescription) = Pair(
+        stringResource(if (proxyEnabled) R.string.connected else R.string.disconnected),
+        stringResource(if (proxyEnabled) R.string.a11y_disable_proxy else R.string.a11y_enable_proxy)
+    )
+    val resources = LocalContext.current.resources
+    val shadowStart = ResourcesCompat.getFloat(resources, R.dimen.toggle_shadow_start)
+    val shadowColor = if (proxyEnabled) MaterialTheme.colors.primary else BlueyGrey
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier.semantics {
+            this.stateDescription = stateDescription
+            onClick(label = actionDescription, action = { onClick(); true })
+        }
+    ) {
         Box(
             modifier = Modifier
                 .size(dimensionResource(R.dimen.toggle_shape_plus_shadow_size))
@@ -101,7 +115,7 @@ private fun ProxyToggleButtonPreviewContent(
 ) {
     ProxyToggleTheme(darkTheme = darkTheme, isPreview = true) {
         Surface {
-            ProxyToggleButton(proxyEnabled = proxyEnabled, onClick = { })
+            ProxyToggleButton(proxyEnabled = proxyEnabled, onClick = {})
         }
     }
 }

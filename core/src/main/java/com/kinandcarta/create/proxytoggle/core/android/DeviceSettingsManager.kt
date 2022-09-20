@@ -1,10 +1,10 @@
 package com.kinandcarta.create.proxytoggle.core.android
 
-import androidx.lifecycle.LiveData
 import com.kinandcarta.create.proxytoggle.core.model.Proxy
+import kotlinx.coroutines.flow.StateFlow
 
 interface DeviceSettingsManager {
-    val proxySetting: LiveData<Proxy>
+    val proxySetting: StateFlow<Proxy>
     fun enableProxy(proxy: Proxy)
     fun disableProxy()
 }

@@ -3,8 +3,8 @@
     <string name="app_name">Proxy Toggle</string>
     <string name="dialog_title_special_permissions">Special permissions required</string>
     <string name="dialog_message_special_permissions">This app needs special permissions that can only be granted by connecting this device to your computer and running a command from Terminal. You can find out how in the README.</string>
-    <string name="proxy_status_disabled">Disconnected</string>
-    <string name="proxy_status_enabled">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="connected">Connected</string>
     <string name="hint_ip_address">IP Address</string>
     <string name="hint_port">Port</string>
     <string name="error_invalid_port">Please enter a valid port</string>

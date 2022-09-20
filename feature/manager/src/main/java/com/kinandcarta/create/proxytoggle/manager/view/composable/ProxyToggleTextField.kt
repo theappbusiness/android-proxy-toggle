@@ -15,15 +15,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
@@ -31,29 +28,28 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.kinandcarta.create.proxytoggle.core.theme.InputTextStyle
 import com.kinandcarta.create.proxytoggle.core.theme.ProxyToggleTheme
 import com.kinandcarta.create.proxytoggle.manager.R
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.TextFieldState
 
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
 fun ProxyToggleTextField(
-    texts: TextFieldTexts,
+    state: TextFieldState,
     onTextChanged: (String) -> Unit,
     enabled: Boolean,
-    keyboardOptions: KeyboardOptions,
-    lastClickTime: Long
+    onForceFocusExecuted: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val focusRequester = remember { FocusRequester() }
-    var hasFocus = false
 
-    fun Modifier.saveFocusModifier() = this
-        .focusRequester(focusRequester)
-        .onFocusChanged { hasFocus = it.isFocused }
+    val focusRequester = remember { FocusRequester() }
+    if (state.forceFocus) {
+        focusRequester.requestFocus()
+        onForceFocusExecuted()
+    }
 
     val focusManager = LocalFocusManager.current
     fun Modifier.shiftFocusToNextOnTabModifier() = this.onPreviewKeyEvent {
@@ -67,54 +63,37 @@ fun ProxyToggleTextField(
 
     Column {
         OutlinedTextField(
-            value = texts.text,
+            value = state.text,
             onValueChange = onTextChanged,
             enabled = enabled,
             modifier = Modifier
-                .saveFocusModifier()
+                .focusRequester(focusRequester)
                 .shiftFocusToNextOnTabModifier(),
             textStyle = InputTextStyle,
-            label = { Text(texts.label) },
-            trailingIcon = texts.errorText?.let {
+            label = { Text(state.label) },
+            trailingIcon = state.error?.let {
                 {
                     Icon(
-                        Icons.Filled.Error,
-                        contentDescription = null,
-                        tint = MaterialTheme.colors.error
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = null
                     )
                 }
             },
-            isError = texts.errorText != null,
-            keyboardOptions = keyboardOptions,
+            isError = state.error != null,
+            keyboardOptions = state.keyboardOptions,
             keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
             singleLine = true
         )
         Text(
-            text = texts.errorText ?: "",
+            text = state.error?.let { stringResource(it) } ?: "",
             modifier = Modifier
-                .padding(start = dimensionResource(R.dimen.textfield_error_padding))
-                .alpha(if (texts.errorText != null) 1f else 0f),
+                .clearAndSetSemantics {}
+                .padding(start = dimensionResource(R.dimen.textfield_error_padding)),
             style = MaterialTheme.typography.caption.copy(
                 color = MaterialTheme.colors.error
             )
         )
     }
-    LaunchedEffect(lastClickTime) {
-        if (hasFocus.not() && texts.errorText != null) {
-            focusRequester.requestFocus()
-        }
-    }
-}
-
-fun getKeyboardOptions(
-    type: KeyboardType,
-    imeAction: ImeAction
-): KeyboardOptions {
-    return KeyboardOptions.Default.copy(
-        autoCorrect = false,
-        keyboardType = type,
-        imeAction = imeAction
-    )
 }
 
 @Preview(name = "Enabled No Text (Light)", group = "ProxyToggleTextField")
@@ -146,7 +125,7 @@ fun ProxyToggleTextFieldEnabledWithTextPreviewDark() {
 fun ProxyToggleTextFieldErrorTextPreview() {
     ProxyToggleTextFieldPreviewContent(
         text = "foobar",
-        error = stringResource(R.string.error_invalid_address)
+        error = R.string.error_invalid_address
     )
 }
 
@@ -156,7 +135,7 @@ fun ProxyToggleTextFieldErrorPreviewDark() {
     ProxyToggleTextFieldPreviewContent(
         darkTheme = true,
         text = "foobar",
-        error = stringResource(R.string.error_invalid_address)
+        error = R.string.error_invalid_address
     )
 }
 
@@ -176,17 +155,21 @@ fun ProxyToggleTextFieldDisabledPreviewDark() {
 private fun ProxyToggleTextFieldPreviewContent(
     darkTheme: Boolean = false,
     text: String = "",
-    error: String? = null,
+    error: Int? = null,
     enabled: Boolean = true
 ) {
     ProxyToggleTheme(darkTheme = darkTheme, isPreview = true) {
         Surface {
             ProxyToggleTextField(
-                texts = TextFieldTexts(text, stringResource(R.string.hint_ip_address), error),
-                onTextChanged = { },
+                state = TextFieldState(
+                    label = "IP Address",
+                    text = text,
+                    keyboardOptions = KeyboardOptions.Default,
+                    error = error
+                ),
+                onTextChanged = {},
                 enabled = enabled,
-                keyboardOptions = getKeyboardOptions(KeyboardType.Uri, ImeAction.Default),
-                lastClickTime = 0
+                onForceFocusExecuted = {}
             )
         }
     }

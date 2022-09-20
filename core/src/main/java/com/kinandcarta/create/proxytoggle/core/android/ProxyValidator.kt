@@ -7,7 +7,7 @@ import javax.inject.Inject
 class ProxyValidator @Inject constructor() {
 
     companion object {
-        private const val MAX_PORT = 65535
+        const val MAX_PORT = 65535
     }
 
     fun isValidIP(input: String) = PatternsCompat.IP_ADDRESS.matcher(input).matches()

@@ -6,7 +6,6 @@ import android.service.quicksettings.TileService
 import androidx.annotation.RequiresApi
 import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.core.intent.getLaunchIntent
-import com.kinandcarta.create.proxytoggle.core.model.Proxy
 import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -30,7 +29,7 @@ class ProxyTileService : TileService() {
     }
 
     private fun toggleProxy() {
-        val proxy = deviceSettingsManager.proxySetting.value ?: Proxy.Disabled
+        val proxy = deviceSettingsManager.proxySetting.value
         if (proxy.isEnabled) {
             deviceSettingsManager.disableProxy()
         } else {
@@ -46,7 +45,7 @@ class ProxyTileService : TileService() {
     }
 
     private fun updateTile() {
-        val proxy = deviceSettingsManager.proxySetting.value ?: Proxy.Disabled
+        val proxy = deviceSettingsManager.proxySetting.value
         if (proxy.isEnabled) {
             qsTile.apply {
                 label = proxy.toString()

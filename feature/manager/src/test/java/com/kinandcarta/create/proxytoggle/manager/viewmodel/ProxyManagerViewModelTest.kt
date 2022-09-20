@@ -1,7 +1,10 @@
 package com.kinandcarta.create.proxytoggle.manager.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.core.android.ProxyValidator
@@ -10,7 +13,6 @@ import com.kinandcarta.create.proxytoggle.core.model.Proxy
 import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
 import com.kinandcarta.create.proxytoggle.core.stub.Stubs.PROXY_ADDRESS
 import com.kinandcarta.create.proxytoggle.core.stub.Stubs.PROXY_PORT
-import com.kinandcarta.create.proxytoggle.testutils.awaitValue
 import io.mockk.Called
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
@@ -20,18 +22,24 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.slot
 import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestRule
+import org.junit.runner.RunWith
 
+@OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(AndroidJUnit4::class)
 class ProxyManagerViewModelTest {
 
-    @get:Rule
-    val instantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
+    private val dispatcher = StandardTestDispatcher()
 
-    @RelaxedMockK
+    @MockK
     private lateinit var mockDeviceSettingsManager: DeviceSettingsManager
 
     @MockK
@@ -43,36 +51,33 @@ class ProxyManagerViewModelTest {
     @RelaxedMockK
     private lateinit var mockThemeSwitcher: ThemeSwitcher
 
-    private val fakeLiveData =
-        MutableLiveData(Proxy.Disabled)
+    private val fakeProxyStateFlow = MutableStateFlow(Proxy.Disabled)
 
     private lateinit var subject: ProxyManagerViewModel
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(dispatcher)
         MockKAnnotations.init(this)
 
-        every { mockDeviceSettingsManager.proxySetting } returns fakeLiveData
+        every { mockDeviceSettingsManager.proxySetting } returns fakeProxyStateFlow
         excludeRecords { mockDeviceSettingsManager.proxySetting }
 
-        // Mock LiveData emitter
+        every { mockAppSettings.lastUsedProxy } returns Proxy.Disabled
+        excludeRecords { mockAppSettings.lastUsedProxy }
+
+        // Mock StateFlow emitter
         val proxy = slot<Proxy>()
         every { mockDeviceSettingsManager.enableProxy(capture(proxy)) } answers {
-            fakeLiveData.value = proxy.captured
+            fakeProxyStateFlow.value = proxy.captured
         }
         every { mockDeviceSettingsManager.disableProxy() } answers {
-            fakeLiveData.value = Proxy.Disabled
+            fakeProxyStateFlow.value = Proxy.Disabled
         }
 
-        every { mockProxyValidator.isValidIP(any()) } returns true
-        every { mockProxyValidator.isValidPort(any()) } returns true
+        every { mockThemeSwitcher.isNightMode() } returns true
 
-        subject = ProxyManagerViewModel(
-            mockDeviceSettingsManager,
-            mockProxyValidator,
-            mockAppSettings,
-            mockThemeSwitcher
-        )
+        subject = initSubject()
     }
 
     @After
@@ -83,93 +88,298 @@ class ProxyManagerViewModelTest {
             mockAppSettings,
             mockThemeSwitcher
         )
+        Dispatchers.resetMain()
     }
 
     @Test
-    fun `enableProxy() - calls the DeviceSettingsManager and proxyState is updated`() {
-        subject.enableProxy(PROXY_ADDRESS, PROXY_PORT)
+    fun `initial uiState - GIVEN isNightMode is true THEN darkTheme is true`() {
+        verify { mockThemeSwitcher.isNightMode() }
 
-        verify {
-            mockThemeSwitcher.isNightMode()
-            mockDeviceSettingsManager.enableProxy(
-                Proxy(
-                    PROXY_ADDRESS,
-                    PROXY_PORT
+        assertThat(subject.uiState.value.darkTheme).isTrue()
+    }
+
+    @Test
+    fun `initial uiState - GIVEN isNightMode is false THEN darkTheme is false`() {
+        // GIVEN
+        every { mockThemeSwitcher.isNightMode() } returns false
+
+        // WHEN
+        subject = initSubject()
+
+        // THEN
+        verify { mockThemeSwitcher.isNightMode() }
+
+        assertThat(subject.uiState.value.darkTheme).isFalse()
+    }
+
+    @Test
+    fun `initial uiState - address and port have correct labels and KeyboardOptions`() {
+        verify { mockThemeSwitcher.isNightMode() }
+
+        subject.uiState.value.addressState.apply {
+            assertThat(label).isEqualTo("IP Address")
+            assertThat(keyboardOptions).isEqualTo(
+                KeyboardOptions.Default.copy(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Uri,
+                    imeAction = ImeAction.Next
                 )
             )
-            mockProxyValidator.isValidIP(PROXY_ADDRESS)
-            mockProxyValidator.isValidPort(PROXY_PORT)
         }
-        assertThat(subject.proxyState.awaitValue()).isEqualTo(
-            ProxyState.Enabled(
-                PROXY_ADDRESS,
-                PROXY_PORT
+        subject.uiState.value.portState.apply {
+            assertThat(label).isEqualTo("Port")
+            assertThat(keyboardOptions).isEqualTo(
+                KeyboardOptions.Default.copy(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                )
             )
-        )
-    }
-
-    @Test
-    fun `enableProxy() - invalid address triggers event and proxyState is Disconnected`() {
-        every { mockProxyValidator.isValidIP(PROXY_ADDRESS) } returns false
-
-        subject.enableProxy(PROXY_ADDRESS, PROXY_PORT)
-
-        verify {
-            mockThemeSwitcher.isNightMode()
-            mockProxyValidator.isValidIP(PROXY_ADDRESS)
-            mockDeviceSettingsManager wasNot Called
         }
-        assertThat(subject.proxyEvent.awaitValue()).isEqualTo(ProxyManagerEvent.InvalidAddress)
-        assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Disabled())
     }
 
     @Test
-    fun `enableProxy() - invalid port triggers event and proxyState is Disconnected`() {
-        every { mockProxyValidator.isValidPort(PROXY_PORT) } returns false
+    fun `initial uiState - address and port have no errors and no forceFocus`() {
+        verify { mockThemeSwitcher.isNightMode() }
 
-        subject.enableProxy(PROXY_ADDRESS, PROXY_PORT)
+        subject.uiState.value.addressState.apply {
+            assertThat(error).isNull()
+            assertThat(forceFocus).isFalse()
+        }
+        subject.uiState.value.portState.apply {
+            assertThat(error).isNull()
+            assertThat(forceFocus).isFalse()
+        }
+    }
 
+    @Test
+    fun `initial uiState - GIVEN no last used proxy THEN address and port are empty`() {
+        verify { mockThemeSwitcher.isNightMode() }
+
+        subject.uiState.value.apply {
+            assertThat(addressState.text).isEmpty()
+            assertThat(portState.text).isEmpty()
+        }
+    }
+
+    @Test
+    fun `initial uiState - GIVEN last used proxy exists THEN address and port have correct texts`() {
+        // GIVEN
+        every { mockAppSettings.lastUsedProxy } returns Proxy(PROXY_ADDRESS, PROXY_PORT)
+
+        // WHEN
+        subject = initSubject()
+
+        // THEN
+        verify { mockThemeSwitcher.isNightMode() }
+
+        subject.uiState.value.apply {
+            assertThat(addressState.text).isEqualTo(PROXY_ADDRESS)
+            assertThat(portState.text).isEqualTo(PROXY_PORT)
+        }
+    }
+
+    @Test
+    fun `toggleProxy() - GIVEN disabled proxy THEN call DeviceSettingsManager update uiState`() {
+        // GIVEN
+        every { mockProxyValidator.isValidIP(any()) } returns true
+        every { mockProxyValidator.isValidPort(any()) } returns true
+        givenTextFieldValues(PROXY_ADDRESS, PROXY_PORT)
+
+        // WHEN
+        subject.toggleProxy()
+
+        // THEN
         verify {
             mockThemeSwitcher.isNightMode()
             mockProxyValidator.isValidIP(PROXY_ADDRESS)
             mockProxyValidator.isValidPort(PROXY_PORT)
-            mockDeviceSettingsManager wasNot Called
+            mockDeviceSettingsManager.enableProxy(
+                Proxy(PROXY_ADDRESS, PROXY_PORT)
+            )
         }
-        assertThat(subject.proxyEvent.awaitValue()).isEqualTo(ProxyManagerEvent.InvalidPort)
-        assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Disabled())
+
+        dispatcher.scheduler.advanceUntilIdle()
+        subject.uiState.value.apply {
+            assertThat(proxyEnabled).isEqualTo(true)
+            assertThat(addressState.text).isEqualTo(PROXY_ADDRESS)
+            assertThat(portState.text).isEqualTo(PROXY_PORT)
+        }
     }
 
     @Test
-    fun `disableProxy() - calls the DeviceSettingsManager and proxyState is updated`() {
-        subject.disableProxy()
+    fun `toggleProxy() - GIVEN enabled proxy THEN call DeviceSettingsManager and update uiState`() {
+        // GIVEN
+        fakeProxyStateFlow.value = Proxy(PROXY_ADDRESS, PROXY_PORT)
 
+        // WHEN
+        subject.toggleProxy()
+
+        // THEN
         verify {
             mockThemeSwitcher.isNightMode()
             mockDeviceSettingsManager.disableProxy()
         }
-        assertThat(subject.proxyState.awaitValue()).isEqualTo(ProxyState.Disabled())
+
+        dispatcher.scheduler.advanceUntilIdle()
+        assertThat(subject.uiState.value.proxyEnabled).isEqualTo(false)
     }
 
     @Test
-    fun `lastUsedProxy - fetch lastUsedProxy from appSettings`() {
-        every { mockAppSettings.lastUsedProxy } returns Proxy.Disabled
+    fun `toggleProxy() - GIVEN disabled proxy and invalid address THEN show address error`() {
+        // GIVEN
+        every { mockProxyValidator.isValidIP(PROXY_ADDRESS) } returns false
+        givenTextFieldValues(PROXY_ADDRESS, PROXY_PORT)
 
-        val result = subject.lastUsedProxy
+        // WHEN
+        subject.toggleProxy()
 
+        // THEN
         verify {
             mockThemeSwitcher.isNightMode()
-            mockAppSettings.lastUsedProxy
+            mockProxyValidator.isValidIP(PROXY_ADDRESS)
+            mockDeviceSettingsManager wasNot Called
         }
-        assertThat(result).isEqualTo(Proxy.Disabled)
+
+        dispatcher.scheduler.advanceUntilIdle()
+        subject.uiState.value.apply {
+            assertThat(proxyEnabled).isEqualTo(false)
+            assertThat(addressState.error).isNotNull()
+            assertThat(addressState.forceFocus).isTrue()
+            assertThat(portState.error).isNull()
+            assertThat(portState.forceFocus).isFalse()
+        }
     }
 
     @Test
-    fun `toggleTheme() - delegates to themeSwitcher`() {
+    fun `toggleProxy() - GIVEN disabled proxy and invalid port THEN show port error`() {
+        // GIVEN
+        every { mockProxyValidator.isValidIP(PROXY_ADDRESS) } returns true
+        every { mockProxyValidator.isValidPort(PROXY_PORT) } returns false
+        givenTextFieldValues(PROXY_ADDRESS, PROXY_PORT)
+
+        // WHEN
+        subject.toggleProxy()
+
+        // THEN
+        verify {
+            mockThemeSwitcher.isNightMode()
+            mockProxyValidator.isValidIP(PROXY_ADDRESS)
+            mockProxyValidator.isValidPort(PROXY_PORT)
+            mockDeviceSettingsManager wasNot Called
+        }
+
+        dispatcher.scheduler.advanceUntilIdle()
+        subject.uiState.value.apply {
+            assertThat(proxyEnabled).isEqualTo(false)
+            assertThat(addressState.error).isNull()
+            assertThat(addressState.forceFocus).isFalse()
+            assertThat(portState.error).isNotNull()
+            assertThat(portState.forceFocus).isTrue()
+        }
+    }
+
+    @Test
+    fun `onAddressChanged() - WHEN address changes THEN update uiState`() {
+        // GIVEN
+        givenTextFieldValues("", PROXY_PORT)
+
+        // WHEN
+        subject.onAddressChanged(PROXY_ADDRESS)
+
+        // THEN
+        verify { mockThemeSwitcher.isNightMode() }
+        assertThat(subject.uiState.value.addressState.text).isEqualTo(PROXY_ADDRESS)
+    }
+
+    @Test
+    fun `onPortChanged() - WHEN port changes THEN update uiState`() {
+        // GIVEN
+        givenTextFieldValues(PROXY_ADDRESS, "")
+
+        // WHEN
+        subject.onPortChanged(PROXY_PORT)
+
+        // THEN
+        verify { mockThemeSwitcher.isNightMode() }
+        assertThat(subject.uiState.value.portState.text).isEqualTo(PROXY_PORT)
+    }
+
+    @Test
+    fun `onAddressChanged() - simple filter, only digits and dots`() {
+        // WHEN
+        val userTyped = "125j0hrvhiz89@$)(!V."
+        subject.onAddressChanged(userTyped)
+
+        // THEN
+        verify { mockThemeSwitcher.isNightMode() }
+        assertThat(subject.uiState.value.addressState.text).isEqualTo(
+            userTyped.filter { it.isDigit() || it == '.' }
+        )
+    }
+
+    @Test
+    fun `onPortChanged() - simple filter, only up to 5 digits`() {
+        // WHEN
+        val userTyped = "125j0hrvhiz89@$)(!V."
+        subject.onPortChanged(userTyped)
+
+        // THEN
+        verify { mockThemeSwitcher.isNightMode() }
+        assertThat(subject.uiState.value.portState.text).isEqualTo(
+            userTyped.filter(Char::isDigit).take(5)
+        )
+    }
+
+    @Test
+    fun `onForceFocusExecuted() - GIVEN any textFields have forceFocus THEN set forceFocus to false`() {
+        // GIVEN
+        givenTextFieldValues(PROXY_ADDRESS, PROXY_PORT, forceFocus = true)
+
+        // WHEN
+        subject.onForceFocusExecuted()
+
+        // THEN
+        verify { mockThemeSwitcher.isNightMode() }
+
+        subject.uiState.value.apply {
+            assertThat(addressState.forceFocus).isFalse()
+            assertThat(portState.forceFocus).isFalse()
+        }
+    }
+
+    @Test
+    fun `toggleTheme() - delegate theme change to themeSwitcher`() {
+        // WHEN
         subject.toggleTheme()
 
+        // THEN
         verify {
             mockThemeSwitcher.isNightMode()
             mockThemeSwitcher.toggleTheme()
         }
+    }
+
+    private fun initSubject() = ProxyManagerViewModel(
+        ApplicationProvider.getApplicationContext(),
+        mockDeviceSettingsManager,
+        mockProxyValidator,
+        mockAppSettings,
+        mockThemeSwitcher
+    )
+
+    private fun givenTextFieldValues(address: String, port: String, forceFocus: Boolean = false) {
+        subject.getInternalUiState().value = subject.uiState.value.copy(
+            addressState = TextFieldState(
+                label = "IP Address",
+                text = address,
+                keyboardOptions = KeyboardOptions.Default, forceFocus = forceFocus
+            ),
+            portState = TextFieldState(
+                label = "Port",
+                text = port,
+                keyboardOptions = KeyboardOptions.Default, forceFocus = forceFocus
+            )
+        )
     }
 }

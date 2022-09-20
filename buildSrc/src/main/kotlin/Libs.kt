@@ -30,8 +30,6 @@ public object Libs {
     public const val material_icons_extended: String =
             "androidx.compose.material:material-icons-extended:_"
 
-    public const val runtime_livedata: String = "androidx.compose.runtime:runtime-livedata:_"
-
     public const val ui: String = "androidx.compose.ui:ui:_"
 
     public const val ui_tooling: String = "androidx.compose.ui:ui-tooling:_"
@@ -46,9 +44,6 @@ public object Libs {
     public const val viewbinding: String = "androidx.databinding:viewbinding:_"
 
     public const val hilt_compiler: String = "androidx.hilt:hilt-compiler:_"
-
-    public const val lifecycle_livedata_core_ktx: String =
-            "androidx.lifecycle:lifecycle-livedata-core-ktx:_"
 
     public const val lifecycle_viewmodel_compose: String =
             "androidx.lifecycle:lifecycle-viewmodel-compose:_"

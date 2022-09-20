@@ -38,7 +38,7 @@ class ToggleWidgetProvider : AppWidgetProvider() {
             // Instantiate the RemoteViews object for the app widget layout.
             val remoteView = RemoteViews(context.packageName, R.layout.widget_toggle)
 
-            val proxy = deviceSettingsManager.proxySetting.value ?: Proxy.Disabled
+            val proxy = deviceSettingsManager.proxySetting.value
 
             if (proxy.isEnabled) {
                 buildEnabledView(remoteView, proxy, context)
@@ -67,7 +67,7 @@ class ToggleWidgetProvider : AppWidgetProvider() {
                 setTextViewText(R.id.address, context.getString(R.string.widget_not_set))
                 setTextViewText(R.id.port, context.getString(R.string.widget_not_set))
             }
-            setTextViewText(R.id.status, context.getString(R.string.proxy_status_disabled))
+            setTextViewText(R.id.status, context.getString(R.string.disconnected))
             setTextColor(
                 R.id.status,
                 ContextCompat.getColor(context, R.color.widget_label_disabled)
@@ -84,7 +84,7 @@ class ToggleWidgetProvider : AppWidgetProvider() {
         remoteView.apply {
             setTextViewText(R.id.address, proxy.address)
             setTextViewText(R.id.port, proxy.port)
-            setTextViewText(R.id.status, context.getString(R.string.proxy_status_enabled))
+            setTextViewText(R.id.status, context.getString(R.string.connected))
             setTextColor(R.id.status, ContextCompat.getColor(context, R.color.widget_label_enabled))
             setImageViewResource(R.id.toggle, R.drawable.widget_toggle_enabled)
             setOnClickPendingIntent(

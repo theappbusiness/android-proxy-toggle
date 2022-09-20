@@ -12,7 +12,6 @@ android {
 }
 
 dependencies {
-    implementation Libs.lifecycle_livedata_core_ktx
     implementation Libs.mockk
     implementation Libs.robolectric
 }

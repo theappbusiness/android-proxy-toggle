@@ -27,7 +27,7 @@ fun ProxyToggleAlertDialog(
                 }
             }
         },
-        onDismissRequest = onCloseDialog ?: { },
+        onDismissRequest = onCloseDialog ?: {},
     )
 }
 
@@ -50,7 +50,7 @@ private fun ProxyToggleAlertDialogPreviewContent(darkTheme: Boolean = false) {
     ProxyToggleTheme(darkTheme = darkTheme, isPreview = true) {
         ProxyToggleAlertDialog(
             message = stringResource(R.string.dialog_message_information),
-            onCloseDialog = { }
+            onCloseDialog = {}
         )
     }
 }

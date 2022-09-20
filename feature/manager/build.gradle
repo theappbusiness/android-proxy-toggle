@@ -22,6 +22,7 @@ dependencies {
     implementation Libs.foundation
     implementation Libs.androidx_compose_material_material
     implementation Libs.material_icons_extended
+    implementation Libs.lifecycle_viewmodel_compose
 
     implementation Libs.showkase
     kapt Libs.showkase_processor

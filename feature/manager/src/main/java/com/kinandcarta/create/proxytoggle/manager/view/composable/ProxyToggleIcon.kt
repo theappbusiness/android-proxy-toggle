@@ -47,7 +47,7 @@ private fun ProxyToggleIconPreviewContent(darkTheme: Boolean = false) {
     ProxyToggleTheme(darkTheme = darkTheme, isPreview = true) {
         Surface {
             ProxyToggleIcon(
-                onClick = { },
+                onClick = {},
                 icon = R.drawable.ic_info,
                 contentDescription = R.string.a11y_information
             )

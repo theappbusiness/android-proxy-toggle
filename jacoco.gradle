@@ -20,12 +20,11 @@ def setupAndroidReporting() {
     if (!productFlavors) productFlavors.add('')
     productFlavors.each { productFlavorName ->
         buildTypes.each { buildTypeName ->
-            def sourceName, sourcePath
+            def sourceName
             if (!productFlavorName) {
-                sourceName = sourcePath = "${buildTypeName}"
+                sourceName = "${buildTypeName}"
             } else {
                 sourceName = "${productFlavorName}${buildTypeName.capitalize()}"
-                sourcePath = "${productFlavorName}/${buildTypeName}"
             }
             def testTaskName = "test${sourceName.capitalize()}UnitTest"
             System.out.println("Task -> $testTaskName")

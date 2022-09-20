@@ -41,10 +41,8 @@ dependencies {
     implementation Libs.com_google_android_material_material
 
     implementation Libs.ui
-    implementation Libs.runtime_livedata
     implementation Libs.material3_window_size_class
     implementation Libs.activity_compose
-    implementation Libs.lifecycle_viewmodel_compose
 
     testImplementation Libs.androidx_test_core
     testImplementation Libs.androidx_test_ext_junit

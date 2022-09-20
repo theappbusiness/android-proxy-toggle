@@ -2,13 +2,13 @@ package com.kinandcarta.create.proxytoggle.android
 
 import android.content.Context
 import android.provider.Settings
-import androidx.lifecycle.MutableLiveData
 import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
-import com.kinandcarta.create.proxytoggle.core.extension.asLiveData
 import com.kinandcarta.create.proxytoggle.core.model.Proxy
 import com.kinandcarta.create.proxytoggle.core.model.ProxyMapper
 import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,8 +22,8 @@ class DeviceSettingsManagerImpl @Inject constructor(
 
     private val contentResolver by lazy { context.contentResolver }
 
-    private val _proxySetting = MutableLiveData<Proxy>()
-    override val proxySetting = _proxySetting.asLiveData()
+    private val _proxySetting = MutableStateFlow(Proxy.Disabled)
+    override val proxySetting = _proxySetting.asStateFlow()
 
     init {
         updateProxyData()
