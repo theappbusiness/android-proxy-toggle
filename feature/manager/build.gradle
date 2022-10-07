@@ -27,7 +27,8 @@ dependencies {
     implementation Libs.showkase
     kapt Libs.showkase_processor
 
-    // FIX: added these 2 due to ClassNotFoundExceptions that affect only preview. Remove if/when fixed
+    // FIX: These 2 are added otherwise we get ClassNotFoundExceptions only for our Compose previews
+    // eg see here for the 2nd: https://stackoverflow.com/a/72807850/4158051. Remove when/if fixed
     debugImplementation Libs.lifecycle_viewmodel_savedstate
     debugImplementation Libs.customview_poolingcontainer
 

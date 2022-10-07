@@ -1,10 +1,5 @@
 package com.kinandcarta.create.proxytoggle.manager.viewmodel
 
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.core.android.ProxyValidator
@@ -13,6 +8,8 @@ import com.kinandcarta.create.proxytoggle.core.model.Proxy
 import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
 import com.kinandcarta.create.proxytoggle.core.stub.Stubs.PROXY_ADDRESS
 import com.kinandcarta.create.proxytoggle.core.stub.Stubs.PROXY_PORT
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel.UiState.TextFieldState
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel.UserInteraction
 import io.mockk.Called
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
@@ -31,10 +28,8 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(AndroidJUnit4::class)
 class ProxyManagerViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
@@ -113,32 +108,6 @@ class ProxyManagerViewModelTest {
     }
 
     @Test
-    fun `initial uiState - address and port have correct labels and KeyboardOptions`() {
-        verify { mockThemeSwitcher.isNightMode() }
-
-        subject.uiState.value.addressState.apply {
-            assertThat(label).isEqualTo("IP Address")
-            assertThat(keyboardOptions).isEqualTo(
-                KeyboardOptions.Default.copy(
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Uri,
-                    imeAction = ImeAction.Next
-                )
-            )
-        }
-        subject.uiState.value.portState.apply {
-            assertThat(label).isEqualTo("Port")
-            assertThat(keyboardOptions).isEqualTo(
-                KeyboardOptions.Default.copy(
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
-                )
-            )
-        }
-    }
-
-    @Test
     fun `initial uiState - address and port have no errors and no forceFocus`() {
         verify { mockThemeSwitcher.isNightMode() }
 
@@ -180,14 +149,14 @@ class ProxyManagerViewModelTest {
     }
 
     @Test
-    fun `toggleProxy() - GIVEN disabled proxy THEN call DeviceSettingsManager update uiState`() {
+    fun `onUserInteraction(ProxyToggled) - GIVEN disabled proxy THEN call DeviceSettingsManager update uiState`() {
         // GIVEN
         every { mockProxyValidator.isValidIP(any()) } returns true
         every { mockProxyValidator.isValidPort(any()) } returns true
         givenTextFieldValues(PROXY_ADDRESS, PROXY_PORT)
 
         // WHEN
-        subject.toggleProxy()
+        subject.onUserInteraction(UserInteraction.ProxyToggled)
 
         // THEN
         verify {
@@ -208,12 +177,12 @@ class ProxyManagerViewModelTest {
     }
 
     @Test
-    fun `toggleProxy() - GIVEN enabled proxy THEN call DeviceSettingsManager and update uiState`() {
+    fun `onUserInteraction(ProxyToggled) - GIVEN enabled proxy THEN call DeviceSettingsManager and update uiState`() {
         // GIVEN
         fakeProxyStateFlow.value = Proxy(PROXY_ADDRESS, PROXY_PORT)
 
         // WHEN
-        subject.toggleProxy()
+        subject.onUserInteraction(UserInteraction.ProxyToggled)
 
         // THEN
         verify {
@@ -226,13 +195,13 @@ class ProxyManagerViewModelTest {
     }
 
     @Test
-    fun `toggleProxy() - GIVEN disabled proxy and invalid address THEN show address error`() {
+    fun `onUserInteraction(ProxyToggled) - GIVEN disabled proxy and invalid address THEN show address error`() {
         // GIVEN
         every { mockProxyValidator.isValidIP(PROXY_ADDRESS) } returns false
         givenTextFieldValues(PROXY_ADDRESS, PROXY_PORT)
 
         // WHEN
-        subject.toggleProxy()
+        subject.onUserInteraction(UserInteraction.ProxyToggled)
 
         // THEN
         verify {
@@ -252,14 +221,14 @@ class ProxyManagerViewModelTest {
     }
 
     @Test
-    fun `toggleProxy() - GIVEN disabled proxy and invalid port THEN show port error`() {
+    fun `onUserInteraction(ProxyToggled) - GIVEN disabled proxy and invalid port THEN show port error`() {
         // GIVEN
         every { mockProxyValidator.isValidIP(PROXY_ADDRESS) } returns true
         every { mockProxyValidator.isValidPort(PROXY_PORT) } returns false
         givenTextFieldValues(PROXY_ADDRESS, PROXY_PORT)
 
         // WHEN
-        subject.toggleProxy()
+        subject.onUserInteraction(UserInteraction.ProxyToggled)
 
         // THEN
         verify {
@@ -280,12 +249,12 @@ class ProxyManagerViewModelTest {
     }
 
     @Test
-    fun `onAddressChanged() - WHEN address changes THEN update uiState`() {
+    fun `onUserInteraction(AddressChanged) - WHEN address changes THEN update uiState`() {
         // GIVEN
         givenTextFieldValues("", PROXY_PORT)
 
         // WHEN
-        subject.onAddressChanged(PROXY_ADDRESS)
+        subject.onUserInteraction(UserInteraction.AddressChanged(PROXY_ADDRESS))
 
         // THEN
         verify { mockThemeSwitcher.isNightMode() }
@@ -293,12 +262,12 @@ class ProxyManagerViewModelTest {
     }
 
     @Test
-    fun `onPortChanged() - WHEN port changes THEN update uiState`() {
+    fun `onUserInteraction(PortChanged) - WHEN port changes THEN update uiState`() {
         // GIVEN
         givenTextFieldValues(PROXY_ADDRESS, "")
 
         // WHEN
-        subject.onPortChanged(PROXY_PORT)
+        subject.onUserInteraction(UserInteraction.PortChanged(PROXY_PORT))
 
         // THEN
         verify { mockThemeSwitcher.isNightMode() }
@@ -306,10 +275,10 @@ class ProxyManagerViewModelTest {
     }
 
     @Test
-    fun `onAddressChanged() - simple filter, only digits and dots`() {
+    fun `onUserInteraction(AddressChanged) - simple filter, only digits and dots`() {
         // WHEN
-        val userTyped = "125j0hrvhiz89@$)(!V."
-        subject.onAddressChanged(userTyped)
+        val userTyped = "125j0h111rvhiz89@$)(!V."
+        subject.onUserInteraction(UserInteraction.AddressChanged(userTyped))
 
         // THEN
         verify { mockThemeSwitcher.isNightMode() }
@@ -319,16 +288,14 @@ class ProxyManagerViewModelTest {
     }
 
     @Test
-    fun `onPortChanged() - simple filter, only up to 5 digits`() {
+    fun `onUserInteraction(PortChanged) - simple filter, only up to 5 digits`() {
         // WHEN
         val userTyped = "125j0hrvhiz89@$)(!V."
-        subject.onPortChanged(userTyped)
+        subject.onUserInteraction(UserInteraction.PortChanged(userTyped))
 
         // THEN
         verify { mockThemeSwitcher.isNightMode() }
-        assertThat(subject.uiState.value.portState.text).isEqualTo(
-            userTyped.filter(Char::isDigit).take(5)
-        )
+        assertThat(subject.uiState.value.portState.text).isEqualTo("12508")
     }
 
     @Test
@@ -349,9 +316,9 @@ class ProxyManagerViewModelTest {
     }
 
     @Test
-    fun `toggleTheme() - delegate theme change to themeSwitcher`() {
+    fun `ThemeToggled - delegate theme change to themeSwitcher`() {
         // WHEN
-        subject.toggleTheme()
+        subject.onUserInteraction(UserInteraction.ThemeToggled)
 
         // THEN
         verify {
@@ -361,7 +328,6 @@ class ProxyManagerViewModelTest {
     }
 
     private fun initSubject() = ProxyManagerViewModel(
-        ApplicationProvider.getApplicationContext(),
         mockDeviceSettingsManager,
         mockProxyValidator,
         mockAppSettings,
@@ -371,14 +337,12 @@ class ProxyManagerViewModelTest {
     private fun givenTextFieldValues(address: String, port: String, forceFocus: Boolean = false) {
         subject.getInternalUiState().value = subject.uiState.value.copy(
             addressState = TextFieldState(
-                label = "IP Address",
                 text = address,
-                keyboardOptions = KeyboardOptions.Default, forceFocus = forceFocus
+                forceFocus = forceFocus
             ),
             portState = TextFieldState(
-                label = "Port",
                 text = port,
-                keyboardOptions = KeyboardOptions.Default, forceFocus = forceFocus
+                forceFocus = forceFocus
             )
         )
     }

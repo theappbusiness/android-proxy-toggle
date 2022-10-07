@@ -2,7 +2,6 @@
 
 package com.kinandcarta.create.proxytoggle.manager.view.composable
 
-import android.view.KeyEvent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
@@ -18,12 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
@@ -33,14 +28,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kinandcarta.create.proxytoggle.core.theme.InputTextStyle
 import com.kinandcarta.create.proxytoggle.core.theme.ProxyToggleTheme
 import com.kinandcarta.create.proxytoggle.manager.R
-import com.kinandcarta.create.proxytoggle.manager.viewmodel.TextFieldState
+import com.kinandcarta.create.proxytoggle.manager.view.extension.ModifierExt.shiftFocusToNextOnTabModifier
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel.UiState.TextFieldState
 
-@Composable
+@Suppress("LongParameterList")
 @OptIn(ExperimentalComposeUiApi::class)
+@Composable
 fun ProxyToggleTextField(
+    label: String,
     state: TextFieldState,
     onTextChanged: (String) -> Unit,
     enabled: Boolean,
+    keyboardOptions: KeyboardOptions,
     onForceFocusExecuted: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -52,14 +51,6 @@ fun ProxyToggleTextField(
     }
 
     val focusManager = LocalFocusManager.current
-    fun Modifier.shiftFocusToNextOnTabModifier() = this.onPreviewKeyEvent {
-        if (it.key == Key.Tab && it.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
-            focusManager.moveFocus(FocusDirection.Next)
-            true
-        } else {
-            false
-        }
-    }
 
     Column {
         OutlinedTextField(
@@ -68,9 +59,9 @@ fun ProxyToggleTextField(
             enabled = enabled,
             modifier = Modifier
                 .focusRequester(focusRequester)
-                .shiftFocusToNextOnTabModifier(),
+                .shiftFocusToNextOnTabModifier(focusManager),
             textStyle = InputTextStyle,
-            label = { Text(state.label) },
+            label = { Text(label) },
             trailingIcon = state.error?.let {
                 {
                     Icon(
@@ -80,7 +71,7 @@ fun ProxyToggleTextField(
                 }
             },
             isError = state.error != null,
-            keyboardOptions = state.keyboardOptions,
+            keyboardOptions = keyboardOptions,
             keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
             singleLine = true
         )
@@ -158,17 +149,17 @@ private fun ProxyToggleTextFieldPreviewContent(
     error: Int? = null,
     enabled: Boolean = true
 ) {
-    ProxyToggleTheme(darkTheme = darkTheme, isPreview = true) {
+    ProxyToggleTheme(darkTheme = darkTheme) {
         Surface {
             ProxyToggleTextField(
+                label = stringResource(R.string.hint_ip_address),
                 state = TextFieldState(
-                    label = "IP Address",
                     text = text,
-                    keyboardOptions = KeyboardOptions.Default,
                     error = error
                 ),
                 onTextChanged = {},
                 enabled = enabled,
+                keyboardOptions = KeyboardOptions.Default,
                 onForceFocusExecuted = {}
             )
         }

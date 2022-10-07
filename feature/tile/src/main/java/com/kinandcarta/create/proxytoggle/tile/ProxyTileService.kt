@@ -5,7 +5,7 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import androidx.annotation.RequiresApi
 import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
-import com.kinandcarta.create.proxytoggle.core.intent.getLaunchIntent
+import com.kinandcarta.create.proxytoggle.core.intent.getAppLaunchIntent
 import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -38,7 +38,7 @@ class ProxyTileService : TileService() {
                 deviceSettingsManager.enableProxy(lastUsedProxy)
             } else {
                 // There is no last used Proxy, prompt the user to create one
-                getLaunchIntent(baseContext)?.let { startActivityAndCollapse(it) }
+                getAppLaunchIntent(baseContext)?.let { startActivityAndCollapse(it) }
             }
         }
         updateTile()

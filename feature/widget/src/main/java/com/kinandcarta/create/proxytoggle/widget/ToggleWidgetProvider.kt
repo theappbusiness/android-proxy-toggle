@@ -5,11 +5,11 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
-import com.kinandcarta.create.proxytoggle.core.intent.getLaunchIntent
-import com.kinandcarta.create.proxytoggle.core.intent.getPendingIntentFlags
+import com.kinandcarta.create.proxytoggle.core.intent.getAppLaunchIntent
 import com.kinandcarta.create.proxytoggle.core.model.Proxy
 import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,7 +46,7 @@ class ToggleWidgetProvider : AppWidgetProvider() {
                 buildDisabledView(remoteView, context)
             }
 
-            getLaunchIntent(context)?.let {
+            getAppLaunchIntent(context)?.let {
                 remoteView.setOnClickPendingIntent(
                     R.id.settings,
                     PendingIntent.getActivity(context, 0, it, getPendingIntentFlags())
@@ -108,7 +108,7 @@ class ToggleWidgetProvider : AppWidgetProvider() {
             deviceSettingsManager.enableProxy(lastUsedProxy)
         } else {
             // There is no last used Proxy, prompt the user to create one
-            getLaunchIntent(context)?.let { context.startActivity(it) }
+            getAppLaunchIntent(context)?.let { context.startActivity(it) }
         }
     }
 
@@ -121,5 +121,13 @@ class ToggleWidgetProvider : AppWidgetProvider() {
             action = this@asPendingIntent
         }
         return PendingIntent.getBroadcast(context, 0, intent, getPendingIntentFlags())
+    }
+
+    private fun getPendingIntentFlags(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
     }
 }

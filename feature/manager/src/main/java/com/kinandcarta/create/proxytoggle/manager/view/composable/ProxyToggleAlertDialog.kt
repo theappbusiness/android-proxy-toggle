@@ -47,7 +47,7 @@ fun ProxyToggleAlertDialogPreviewDark() {
 
 @Composable
 private fun ProxyToggleAlertDialogPreviewContent(darkTheme: Boolean = false) {
-    ProxyToggleTheme(darkTheme = darkTheme, isPreview = true) {
+    ProxyToggleTheme(darkTheme = darkTheme) {
         ProxyToggleAlertDialog(
             message = stringResource(R.string.dialog_message_information),
             onCloseDialog = {}

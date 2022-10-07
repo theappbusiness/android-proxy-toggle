@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import com.kinandcarta.create.proxytoggle.core.theme.ProxyToggleTheme
 import com.kinandcarta.create.proxytoggle.manager.R
 
@@ -32,19 +33,21 @@ fun ProxyToggleIcon(
 
 @Preview(name = "Info Icon (Light)", group = "ProxyToggleIcon")
 @Composable
+@ShowkaseComposable(skip = true)
 fun ProxyToggleIconPreview() {
     ProxyToggleIconPreviewContent()
 }
 
 @Preview(name = "Info Icon (Dark)", group = "ProxyToggleIcon")
 @Composable
+@ShowkaseComposable(skip = true)
 fun ProxyToggleIconPreviewDark() {
     ProxyToggleIconPreviewContent(darkTheme = true)
 }
 
 @Composable
 private fun ProxyToggleIconPreviewContent(darkTheme: Boolean = false) {
-    ProxyToggleTheme(darkTheme = darkTheme, isPreview = true) {
+    ProxyToggleTheme(darkTheme = darkTheme) {
         Surface {
             ProxyToggleIcon(
                 onClick = {},

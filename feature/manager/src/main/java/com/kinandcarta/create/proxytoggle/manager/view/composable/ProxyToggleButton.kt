@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.res.ResourcesCompat
+import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import com.kinandcarta.create.proxytoggle.core.theme.BlueyGrey
 import com.kinandcarta.create.proxytoggle.core.theme.ProxyToggleTheme
 import com.kinandcarta.create.proxytoggle.manager.R
@@ -86,24 +87,28 @@ fun ProxyToggleButton(
 
 @Preview(name = "Enabled (Light)", group = "ProxyToggleButton")
 @Composable
+@ShowkaseComposable(skip = true)
 fun ProxyToggleButtonEnabledPreview() {
     ProxyToggleButtonPreviewContent(proxyEnabled = true)
 }
 
 @Preview(name = "Enabled (Dark)", group = "ProxyToggleButton")
 @Composable
+@ShowkaseComposable(skip = true)
 fun ProxyToggleButtonEnabledPreviewDark() {
     ProxyToggleButtonPreviewContent(darkTheme = true, proxyEnabled = true)
 }
 
 @Preview(name = "Disabled (Light)", group = "ProxyToggleButton")
 @Composable
+@ShowkaseComposable(skip = true)
 fun ProxyToggleButtonDisabledPreview() {
     ProxyToggleButtonPreviewContent()
 }
 
 @Preview(name = "Disabled (Dark)", group = "ProxyToggleButton")
 @Composable
+@ShowkaseComposable(skip = true)
 fun ProxyToggleButtonDisabledPreviewDark() {
     ProxyToggleButtonPreviewContent(darkTheme = true)
 }
@@ -113,7 +118,7 @@ private fun ProxyToggleButtonPreviewContent(
     darkTheme: Boolean = false,
     proxyEnabled: Boolean = false
 ) {
-    ProxyToggleTheme(darkTheme = darkTheme, isPreview = true) {
+    ProxyToggleTheme(darkTheme = darkTheme) {
         Surface {
             ProxyToggleButton(proxyEnabled = proxyEnabled, onClick = {})
         }

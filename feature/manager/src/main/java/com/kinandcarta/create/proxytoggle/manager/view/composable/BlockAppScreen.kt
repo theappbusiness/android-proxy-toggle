@@ -20,8 +20,8 @@ fun BlockAppScreen(
 }
 
 @Composable
-fun BlockAppScreenContent(darkTheme: Boolean, isPreview: Boolean = false) {
-    ProxyToggleTheme(darkTheme = darkTheme, isPreview = isPreview) {
+fun BlockAppScreenContent(darkTheme: Boolean) {
+    ProxyToggleTheme(darkTheme = darkTheme) {
         Surface {
             ProxyToggleAlertDialog(
                 title = stringResource(R.string.dialog_title_special_permissions),
@@ -36,12 +36,12 @@ fun BlockAppScreenContent(darkTheme: Boolean, isPreview: Boolean = false) {
 @ShowkaseComposable(skip = true)
 @Composable
 fun BlockAppScreenPreview() {
-    BlockAppScreenContent(darkTheme = false, isPreview = true)
+    BlockAppScreenContent(darkTheme = false)
 }
 
 @Preview(name = "Dialog (Dark)", group = "BlockAppScreen")
 @ShowkaseComposable(skip = true)
 @Composable
 fun BlockAppScreenPreviewDark() {
-    BlockAppScreenContent(darkTheme = true, isPreview = true)
+    BlockAppScreenContent(darkTheme = true)
 }

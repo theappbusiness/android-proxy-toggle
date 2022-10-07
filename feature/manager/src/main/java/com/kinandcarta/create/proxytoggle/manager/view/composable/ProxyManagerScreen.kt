@@ -28,6 +28,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -37,7 +39,9 @@ import com.kinandcarta.create.proxytoggle.core.theme.ProxyToggleTheme
 import com.kinandcarta.create.proxytoggle.core.theme.StatusLabelTextStyle
 import com.kinandcarta.create.proxytoggle.manager.R
 import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel
-import com.kinandcarta.create.proxytoggle.manager.viewmodel.TextFieldState
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel.UiState
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel.UiState.TextFieldState
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel.UserInteraction
 
 @Composable
 fun ProxyManagerScreen(
@@ -48,48 +52,34 @@ fun ProxyManagerScreen(
 
     ProxyManagerScreenContent(
         useVerticalLayout = useVerticalLayout,
-        darkTheme = uiState.darkTheme,
-        onToggleTheme = viewModel::toggleTheme,
-        proxyEnabled = uiState.proxyEnabled,
-        onToggleProxy = viewModel::toggleProxy,
-        addressState = uiState.addressState,
-        onAddressChanged = viewModel::onAddressChanged,
-        portState = uiState.portState,
-        onPortChanged = viewModel::onPortChanged,
+        uiState = uiState,
+        onUserInteraction = viewModel::onUserInteraction,
         onForceFocusExecuted = viewModel::onForceFocusExecuted
     )
 }
 
-@Suppress("LongParameterList")
 @Composable
 fun ProxyManagerScreenContent(
     useVerticalLayout: Boolean,
-    darkTheme: Boolean,
-    onToggleTheme: () -> Unit,
-    proxyEnabled: Boolean,
-    onToggleProxy: () -> Unit,
-    addressState: TextFieldState,
-    onAddressChanged: (String) -> Unit,
-    portState: TextFieldState,
-    onPortChanged: (String) -> Unit,
-    onForceFocusExecuted: () -> Unit,
-    isPreview: Boolean = false
+    uiState: UiState,
+    onUserInteraction: (UserInteraction) -> Unit,
+    onForceFocusExecuted: () -> Unit
 ) {
     @OptIn(ExperimentalComposeUiApi::class)
-    if (proxyEnabled) {
+    if (uiState.proxyEnabled) {
         LocalSoftwareKeyboardController.current?.hide()
     }
 
     var showInfoDialog by rememberSaveable { mutableStateOf(false) }
 
-    ProxyToggleTheme(darkTheme = darkTheme, isPreview = isPreview) {
+    ProxyToggleTheme(darkTheme = uiState.darkTheme) {
         Surface {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 TopIcons(
-                    onToggleTheme = onToggleTheme,
+                    onToggleTheme = { onUserInteraction(UserInteraction.ThemeToggled) },
                     onDismissInfo = { showInfoDialog = showInfoDialog.not() },
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
@@ -97,23 +87,30 @@ fun ProxyManagerScreenContent(
                     useVerticalLayout = useVerticalLayout,
                     buttonAndLabel = {
                         ButtonAndLabel(
-                            proxyEnabled = proxyEnabled,
-                            onToggleProxy = onToggleProxy
+                            proxyEnabled = uiState.proxyEnabled,
+                            onToggleProxy = { onUserInteraction(UserInteraction.ProxyToggled) }
                         )
                     },
                     addressTextField = {
                         ProxyToggleTextField(
-                            state = addressState,
-                            onTextChanged = onAddressChanged,
-                            enabled = proxyEnabled.not(),
+                            label = stringResource(R.string.hint_ip_address),
+                            state = uiState.addressState,
+                            onTextChanged = { onUserInteraction(UserInteraction.AddressChanged(it)) },
+                            enabled = uiState.proxyEnabled.not(),
+                            keyboardOptions = getKeyboardOptions(KeyboardType.Uri, ImeAction.Next),
                             onForceFocusExecuted = onForceFocusExecuted
                         )
                     },
                     portTextField = {
                         ProxyToggleTextField(
-                            state = portState,
-                            onTextChanged = onPortChanged,
-                            enabled = proxyEnabled.not(),
+                            label = stringResource(R.string.hint_port),
+                            state = uiState.portState,
+                            onTextChanged = { onUserInteraction(UserInteraction.PortChanged(it)) },
+                            enabled = uiState.proxyEnabled.not(),
+                            keyboardOptions = getKeyboardOptions(
+                                KeyboardType.Number,
+                                ImeAction.Done
+                            ),
                             onForceFocusExecuted = onForceFocusExecuted
                         )
                     }
@@ -211,6 +208,17 @@ fun ButtonAndLabel(
     }
 }
 
+private fun getKeyboardOptions(
+    type: KeyboardType,
+    imeAction: ImeAction
+): KeyboardOptions {
+    return KeyboardOptions.Default.copy(
+        autoCorrect = false,
+        keyboardType = type,
+        imeAction = imeAction
+    )
+}
+
 @Preview(name = "Connected (Light)", group = "ProxyManagerScreen")
 @Composable
 fun ProxyManagerScreenConnectedPreview() {
@@ -223,15 +231,15 @@ fun ProxyManagerScreenConnectedPreviewDark() {
     ProxyManagerScreenForPreview(darkTheme = true, proxyEnabled = true)
 }
 
-@Preview(name = "Unconnected (Light)", group = "ProxyManagerScreen")
+@Preview(name = "Disconnected (Light)", group = "ProxyManagerScreen")
 @Composable
-fun ProxyManagerScreenUnconnectedPreview() {
+fun ProxyManagerScreenDisconnectedPreview() {
     ProxyManagerScreenForPreview()
 }
 
-@Preview(name = "Unconnected (Dark)", group = "ProxyManagerScreen")
+@Preview(name = "Disconnected (Dark)", group = "ProxyManagerScreen")
 @Composable
-fun ProxyManagerScreenUnconnectedPreviewDark() {
+fun ProxyManagerScreenDisconnectedPreviewDark() {
     ProxyManagerScreenForPreview(darkTheme = true)
 }
 
@@ -265,24 +273,24 @@ fun ProxyManagerScreenConnectedPreviewDarkLandscape() {
 }
 
 @Preview(
-    name = "Unconnected (Light Landscape)", group = "ProxyManagerScreen Landscape",
+    name = "Disconnected (Light Landscape)", group = "ProxyManagerScreen Landscape",
     device = Devices.AUTOMOTIVE_1024p,
     widthDp = PREVIEW_LANDSCAPE_WIDTH,
     heightDp = PREVIEW_LANDSCAPE_HEIGHT
 )
 @Composable
-fun ProxyManagerScreenUnconnectedPreviewLandscape() {
+fun ProxyManagerScreenDisconnectedPreviewLandscape() {
     ProxyManagerScreenForPreview(useVerticalLayout = false)
 }
 
 @Preview(
-    name = "Unconnected (Dark Landscape)", group = "ProxyManagerScreen Landscape",
+    name = "Disconnected (Dark Landscape)", group = "ProxyManagerScreen Landscape",
     device = Devices.AUTOMOTIVE_1024p,
     widthDp = PREVIEW_LANDSCAPE_WIDTH,
     heightDp = PREVIEW_LANDSCAPE_HEIGHT
 )
 @Composable
-fun ProxyManagerScreenUnconnectedPreviewDarkLandscape() {
+fun ProxyManagerScreenDisconnectedPreviewDarkLandscape() {
     ProxyManagerScreenForPreview(useVerticalLayout = false, darkTheme = true)
 }
 
@@ -295,23 +303,13 @@ private fun ProxyManagerScreenForPreview(
     val someProxy = Proxy("192.168.1.1", "8888")
     ProxyManagerScreenContent(
         useVerticalLayout = useVerticalLayout,
-        darkTheme = darkTheme,
-        onToggleTheme = {},
-        proxyEnabled = proxyEnabled,
-        onToggleProxy = {},
-        addressState = TextFieldState(
-            label = "IP Address",
-            text = if (proxyEnabled) someProxy.address else "",
-            keyboardOptions = KeyboardOptions.Default
+        uiState = UiState(
+            darkTheme = darkTheme,
+            proxyEnabled = proxyEnabled,
+            addressState = TextFieldState(text = if (proxyEnabled) someProxy.address else ""),
+            portState = TextFieldState(text = if (proxyEnabled) someProxy.port else "")
         ),
-        onAddressChanged = {},
-        portState = TextFieldState(
-            label = "Port",
-            text = if (proxyEnabled) someProxy.port else "",
-            keyboardOptions = KeyboardOptions.Default
-        ),
-        onPortChanged = {},
-        onForceFocusExecuted = {},
-        isPreview = true
+        onUserInteraction = {},
+        onForceFocusExecuted = {}
     )
 }

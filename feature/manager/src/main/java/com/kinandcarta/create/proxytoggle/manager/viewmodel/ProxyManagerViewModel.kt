@@ -1,13 +1,10 @@
 package com.kinandcarta.create.proxytoggle.manager.viewmodel
 
-import android.content.Context
+import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
@@ -16,8 +13,8 @@ import com.kinandcarta.create.proxytoggle.core.android.ThemeSwitcher
 import com.kinandcarta.create.proxytoggle.core.model.Proxy
 import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
 import com.kinandcarta.create.proxytoggle.manager.R
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel.UiState.TextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,7 +22,6 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions")
 @HiltViewModel
 class ProxyManagerViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val deviceSettingsManager: DeviceSettingsManager,
     private val proxyValidator: ProxyValidator,
     private val appSettings: AppSettings,
@@ -36,8 +32,8 @@ class ProxyManagerViewModel @Inject constructor(
         UiState(
             darkTheme = themeSwitcher.isNightMode(),
             proxyEnabled = false,
-            addressState = getInitialAddressState(),
-            portState = getInitialPortState()
+            addressState = TextFieldState(text = getLastUsedProxy()?.address ?: ""),
+            portState = TextFieldState(text = getLastUsedProxy()?.port ?: "")
         )
     )
     val uiState: State<UiState> = _uiState
@@ -62,32 +58,12 @@ class ProxyManagerViewModel @Inject constructor(
         }
     }
 
-    fun toggleProxy() {
-        if (deviceSettingsManager.proxySetting.value.isEnabled) {
-            deviceSettingsManager.disableProxy()
-        } else {
-            enableProxy()
-        }
-    }
-
-    fun toggleTheme() {
-        themeSwitcher.toggleTheme()
-        updateUiState { it.copy(darkTheme = themeSwitcher.isNightMode()) }
-    }
-
-    fun onAddressChanged(newText: String) {
-        val newTextFiltered = newText.filter { it.isDigit() || it == '.' }
-        updateUiState {
-            it.copy(addressState = it.addressState.copy(text = newTextFiltered))
-        }
-    }
-
-    fun onPortChanged(newText: String) {
-        val newTextFiltered = newText
-            .filter(Char::isDigit)
-            .take(ProxyValidator.MAX_PORT.toString().length)
-        updateUiState {
-            it.copy(portState = it.portState.copy(text = newTextFiltered))
+    fun onUserInteraction(userInteraction: UserInteraction) {
+        when (userInteraction) {
+            UserInteraction.ProxyToggled -> toggleProxy()
+            UserInteraction.ThemeToggled -> toggleTheme()
+            is UserInteraction.AddressChanged -> onAddressChanged(userInteraction.newAddress)
+            is UserInteraction.PortChanged -> onPortChanged(userInteraction.newPort)
         }
     }
 
@@ -97,6 +73,35 @@ class ProxyManagerViewModel @Inject constructor(
                 addressState = it.addressState.copy(forceFocus = false),
                 portState = it.portState.copy(forceFocus = false)
             )
+        }
+    }
+
+    private fun toggleProxy() {
+        if (deviceSettingsManager.proxySetting.value.isEnabled) {
+            deviceSettingsManager.disableProxy()
+        } else {
+            enableProxy()
+        }
+    }
+
+    private fun toggleTheme() {
+        themeSwitcher.toggleTheme()
+        updateUiState { it.copy(darkTheme = themeSwitcher.isNightMode()) }
+    }
+
+    private fun onAddressChanged(newText: String) {
+        val newTextFiltered = newText.filter { it.isDigit() || it == '.' }
+        updateUiState {
+            it.copy(addressState = it.addressState.copy(text = newTextFiltered))
+        }
+    }
+
+    private fun onPortChanged(newText: String) {
+        val newTextFiltered = newText
+            .filter(Char::isDigit)
+            .take(ProxyValidator.MAX_PORT.toString().length)
+        updateUiState {
+            it.copy(portState = it.portState.copy(text = newTextFiltered))
         }
     }
 
@@ -167,40 +172,33 @@ class ProxyManagerViewModel @Inject constructor(
         }
     }
 
-    private fun getInitialAddressState(): TextFieldState {
-        return TextFieldState(
-            label = context.getString(R.string.hint_ip_address),
-            text = getLastUsedProxy()?.address ?: "",
-            keyboardOptions = getKeyboardOptions(KeyboardType.Uri, ImeAction.Next)
-        )
-    }
-
-    private fun getInitialPortState(): TextFieldState {
-        return TextFieldState(
-            label = context.getString(R.string.hint_port),
-            text = getLastUsedProxy()?.port ?: "",
-            keyboardOptions = getKeyboardOptions(KeyboardType.Number, ImeAction.Done)
-        )
-    }
-
     private fun getLastUsedProxy(): Proxy? {
         return if (appSettings.lastUsedProxy.isEnabled) appSettings.lastUsedProxy else null
-    }
-
-    private fun getKeyboardOptions(
-        type: KeyboardType,
-        imeAction: ImeAction
-    ): KeyboardOptions {
-        return KeyboardOptions.Default.copy(
-            autoCorrect = false,
-            keyboardType = type,
-            imeAction = imeAction
-        )
     }
 
     @VisibleForTesting
     fun getInternalUiState(): MutableState<UiState> {
         return _uiState
+    }
+
+    data class UiState(
+        val darkTheme: Boolean,
+        val proxyEnabled: Boolean,
+        val addressState: TextFieldState,
+        val portState: TextFieldState
+    ) {
+        data class TextFieldState(
+            val text: String,
+            @StringRes val error: Int? = null,
+            val forceFocus: Boolean = false
+        )
+    }
+
+    sealed class UserInteraction {
+        object ProxyToggled : UserInteraction()
+        object ThemeToggled : UserInteraction()
+        data class AddressChanged(val newAddress: String) : UserInteraction()
+        data class PortChanged(val newPort: String) : UserInteraction()
     }
 
     private sealed class ProxyManagerError {

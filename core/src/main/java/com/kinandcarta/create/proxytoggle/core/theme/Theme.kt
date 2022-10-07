@@ -20,14 +20,11 @@ private val DarkColorPalette = darkColors(
 @Composable
 fun ProxyToggleTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    isPreview: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    // Temporary fix for previews not working if we use systemUiController...
-    if (isPreview.not()) {
-        val statusBarColor = if (darkTheme) Dark else LightGray
-        rememberSystemUiController().setSystemBarsColor(statusBarColor)
-    }
+    val statusBarColor = if (darkTheme) Dark else LightGray
+    rememberSystemUiController().setSystemBarsColor(statusBarColor)
+
     val colors = if (darkTheme) DarkColorPalette else LightColorPalette
 
     MaterialTheme(
