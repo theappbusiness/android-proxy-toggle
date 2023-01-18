@@ -1,6 +1,6 @@
 package com.kinandcarta.create.proxytoggle.android
 
-import com.kinandcarta.create.proxytoggle.broadcast.ProxyUpdateListenerProvider
+import com.kinandcarta.create.proxytoggle.core.broadcast.ProxyUpdateListenerProvider
 import javax.inject.Inject
 
 class ProxyUpdateNotifier @Inject constructor(

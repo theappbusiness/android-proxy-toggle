@@ -43,7 +43,7 @@ This app supports Android 5.0 and above.
 
 ### Architecture
 
-Due to the simplicity of the app, the project has a single `app` module and the different features can be found under the `feature` package.
+The project has a small `app` module and the different features (manager screen, widget, tile) each have their own module. Things used by several modules are included in `core` module. Finally, there's a `test-utils` module for things shared by many modules' test source-trees.
 
 The app follows MVVM Clean Architecture principles.
 

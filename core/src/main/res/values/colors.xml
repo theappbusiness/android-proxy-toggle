@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colour Palette -->
+    <color name="dark">#1c1a23</color>
+    <color name="dark_alpha_80">#cc1c1a23</color>
+    <color name="vivid_purple">#7f00ff</color>
+    <color name="periwinkle">#a080fb</color>
+    <color name="bluey_grey">#a0a0aa</color>
+    <color name="pale_grey">#f1f1f2</color>
+    <color name="light_gray">#f8f8f8</color>
+    <color name="white">#fff</color>
+
+    <color name="primary">@color/vivid_purple</color>
+
+    <!-- General screen colours -->
+    <color name="screen_background">@color/light_gray</color>
+</resources>

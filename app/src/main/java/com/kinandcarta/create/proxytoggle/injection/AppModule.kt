@@ -1,25 +1,26 @@
 package com.kinandcarta.create.proxytoggle.injection
 
+import com.kinandcarta.create.proxytoggle.android.DeviceSettingsManagerImpl
 import com.kinandcarta.create.proxytoggle.android.SharedPrefsAppSettings
-import com.kinandcarta.create.proxytoggle.broadcast.ProxyUpdateListenerProvider
-import com.kinandcarta.create.proxytoggle.broadcast.ProxyUpdateListenerProviderImpl
-import com.kinandcarta.create.proxytoggle.settings.AppSettings
+import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
+import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 
+@Suppress("unused")
 @Module
-@InstallIn(ApplicationComponent::class)
-abstract class AppModule {
+@InstallIn(SingletonComponent::class)
+interface AppModule {
 
     @Binds
-    abstract fun bindProxyUpdateListenerProvider(
-        providerImpl: ProxyUpdateListenerProviderImpl
-    ): ProxyUpdateListenerProvider
-
-    @Binds
-    abstract fun bindAppSettings(
+    fun bindAppSettings(
         sharedPrefsAppSettings: SharedPrefsAppSettings
     ): AppSettings
+
+    @Binds
+    fun bindDeviceSettingsManager(
+        deviceSettingsManager: DeviceSettingsManagerImpl
+    ): DeviceSettingsManager
 }

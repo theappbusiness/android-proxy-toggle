@@ -1,93 +1,54 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-android-extensions'
-    id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
+    id "com.android.application"
+    id "kotlin-android"
+    id "kotlin-kapt"
+    id "dagger.hilt.android.plugin"
 }
 
-apply from: rootProject.file("jacoco.gradle")
-
-def versionMajor = 1
-def versionMinor = 0
-def versionPatch = 1
+apply from: rootProject.file("buildScripts/common.gradle")
+apply from: rootProject.file("buildScripts/common-compose.gradle")
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.kinandcarta.create.proxytoggle"
-        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
-
-        minSdkVersion 21
-        targetSdkVersion 30
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
         viewBinding = true
     }
 
-    androidExtensions {
-        experimental = true
-    }
-
-    testOptions {
-        unitTests.includeAndroidResources = true
-    }
-
-    hilt {
-        enableTransformForLocalTests = true
-    }
-
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"),
+                    rootProject.file("proguard-rules.pro")
         }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    implementation Libs.kotlin_stdlib
-    implementation Libs.core_ktx
-    implementation Libs.fragment_ktx
-    implementation Libs.lifecycle_livedata_ktx
-    implementation Libs.lifecycle_viewmodel_ktx
-    implementation Libs.appcompat
-    implementation Libs.material
-    implementation Libs.constraintlayout
+    implementation project(":core")
+    implementation project(":feature:manager")
+    implementation project(":feature:tile")
+    implementation project(":feature:widget")
 
     implementation Libs.hilt_android
     kapt Libs.hilt_android_compiler
-
-    implementation Libs.hilt_lifecycle_viewmodel
     kapt Libs.hilt_compiler
 
-    testImplementation Libs.junit_junit
-    testImplementation Libs.androidx_test_ext_junit
+    implementation Libs.kotlin_stdlib
+    implementation Libs.com_google_android_material_material
+
+    implementation Libs.ui
+    implementation Libs.material3_window_size_class
+    implementation Libs.activity_compose
+
     testImplementation Libs.androidx_test_core
+    testImplementation Libs.androidx_test_ext_junit
     testImplementation Libs.core_testing
+    testImplementation Libs.junit_junit
     testImplementation Libs.mockk
     testImplementation Libs.robolectric
     testImplementation Libs.truth
-    testImplementation Libs.hilt_android_testing
-    kaptTest Libs.hilt_android_compiler
-
-    androidTestImplementation Libs.androidx_test_ext_junit
-    androidTestImplementation Libs.espresso_core
 }
-
-preBuild.dependsOn('detekt')

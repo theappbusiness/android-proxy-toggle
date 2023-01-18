@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="large_margin">32dp</dimen>
+    <dimen name="xlarge_margin">48dp</dimen>
+    <dimen name="textfield_error_padding">12dp</dimen>
+
+    <!-- Toggle button -->
+    <dimen name="toggle_shape_plus_shadow_size">200dp</dimen>
+    <dimen name="toggle_inset">40dp</dimen>
+    <dimen name="toggle_inset_small">30dp</dimen>
+    <item name="toggle_shadow_start" type="dimen" format="float">0.55</item>
+</resources>

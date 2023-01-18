@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Toggle button colours -->
+    <color name="toggle_background">@color/screen_background</color>
+    <color name="toggle_glow_disabled">@color/bluey_grey</color>
+    <color name="toggle_glow_enabled">@color/primary</color>
+
+    <!-- Widget colours -->
+    <color name="widget_toggle_background">@color/dark</color>
+    <color name="widget_label_disabled">@color/pale_grey</color>
+    <color name="widget_label_enabled">@color/periwinkle</color>
+</resources>

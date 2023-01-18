@@ -8,6 +8,8 @@ formatting:
 naming:
   FunctionMaxLength:
     active: false
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
 
 style:
   NewLineAtEndOfFile:

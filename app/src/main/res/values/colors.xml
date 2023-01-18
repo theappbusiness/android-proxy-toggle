@@ -1,36 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Colour Palette -->
-    <color name="dark">#1c1a23</color>
-    <color name="dark_alpha_80">#CC1c1a23</color>
-    <color name="dark_two">#28262e</color>
-    <color name="vivid_purple">#7f00ff</color>
-    <color name="periwinkle">#a080fb</color>
-    <color name="bluey_grey">#a0a0aa</color>
-    <color name="pale_grey">#f1f1f2</color>
-    <color name="light_gray">#f8f8f8</color>
-    <color name="white">#fff</color>
-
-    <color name="primary">@color/vivid_purple</color>
-
     <!-- Launcher icon -->
     <color name="ic_launcher_background">@color/primary</color>
-
-    <!-- General screen colours -->
-    <color name="screen_background">@color/light_gray</color>
-    <color name="info_icon">@color/primary</color>
-
-    <!-- Toggle button colours -->
-    <color name="toggle_background">@color/screen_background</color>
-    <color name="toggle_glow_disabled">@color/bluey_grey</color>
-    <color name="toggle_glow_enabled">@color/primary</color>
-    <color name="toggle_icon_disabled">@color/bluey_grey</color>
-    <color name="toggle_icon_enabled">@color/primary</color>
-    <color name="toggle_text_disabled">@color/bluey_grey</color>
-    <color name="toggle_text_enabled">@color/primary</color>
-
-    <!-- Widget colours -->
-    <color name="widget_toggle_background">@color/dark</color>
-    <color name="widget_label_disabled">@color/pale_grey</color>
-    <color name="widget_label_enabled">@color/periwinkle</color>
 </resources>

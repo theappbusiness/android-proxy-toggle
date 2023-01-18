@@ -1,0 +1,21 @@
+plugins {
+    id "com.android.library"
+    id "dagger.hilt.android.plugin"
+}
+
+apply from: rootProject.file("buildScripts/common.gradle")
+
+dependencies {
+    implementation project(":core")
+    testImplementation project(":test-utils")
+
+    implementation Libs.hilt_android
+    kapt Libs.hilt_android_compiler
+    kapt Libs.hilt_compiler
+
+    testImplementation Libs.androidx_test_ext_junit
+    testImplementation Libs.junit_junit
+    testImplementation Libs.mockk
+    testImplementation Libs.robolectric
+    testImplementation Libs.truth
+}
