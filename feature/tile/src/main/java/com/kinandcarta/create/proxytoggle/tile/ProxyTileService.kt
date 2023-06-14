@@ -4,10 +4,14 @@ import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import androidx.annotation.RequiresApi
-import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
-import com.kinandcarta.create.proxytoggle.core.intent.getAppLaunchIntent
-import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
+import com.kinandcarta.create.proxytoggle.core.common.intent.getAppLaunchIntent
+import com.kinandcarta.create.proxytoggle.repository.appdata.AppDataRepository
+import com.kinandcarta.create.proxytoggle.repository.devicesettings.DeviceSettingsManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -18,7 +22,9 @@ class ProxyTileService : TileService() {
     lateinit var deviceSettingsManager: DeviceSettingsManager
 
     @Inject
-    lateinit var appSettings: AppSettings
+    lateinit var appDataRepository: AppDataRepository
+
+    private var coroutineJob: Job? = null
 
     override fun onClick() {
         toggleProxy()
@@ -28,20 +34,26 @@ class ProxyTileService : TileService() {
         updateTile()
     }
 
+    override fun onStopListening() {
+        coroutineJob?.cancel()
+    }
+
     private fun toggleProxy() {
-        val proxy = deviceSettingsManager.proxySetting.value
-        if (proxy.isEnabled) {
-            deviceSettingsManager.disableProxy()
-        } else {
-            val lastUsedProxy = appSettings.lastUsedProxy
-            if (lastUsedProxy.isEnabled) {
-                deviceSettingsManager.enableProxy(lastUsedProxy)
+        coroutineJob = MainScope().launch {
+            val proxy = deviceSettingsManager.proxySetting.value
+            if (proxy.isEnabled) {
+                deviceSettingsManager.disableProxy()
             } else {
-                // There is no last used Proxy, prompt the user to create one
-                getAppLaunchIntent(baseContext)?.let { startActivityAndCollapse(it) }
+                val lastUsedProxy = appDataRepository.pastProxies.first().firstOrNull()
+                if (lastUsedProxy != null) {
+                    deviceSettingsManager.enableProxy(lastUsedProxy)
+                } else {
+                    // There is no last used Proxy, prompt the user to create one
+                    getAppLaunchIntent(baseContext)?.let { startActivityAndCollapse(it) }
+                }
             }
+            updateTile()
         }
-        updateTile()
     }
 
     private fun updateTile() {

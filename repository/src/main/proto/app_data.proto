@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_package = "com.kinandcarta.create.proxytoggle.datastore";
+option java_multiple_files = true;
+
+message PastProxy {
+  string address = 1;
+  string port = 2;
+  sint64 timestamp = 3;
+}
+
+message AppData {
+  repeated PastProxy past_proxies = 2;
+}

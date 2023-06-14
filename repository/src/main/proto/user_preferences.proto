@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_package = "com.kinandcarta.create.proxytoggle.datastore";
+option java_multiple_files = true;
+
+message UserPreferences {
+  ThemeMode theme_mode = 1;
+
+  enum ThemeMode {
+    UNSPECIFIED = 0;
+    LIGHT = 1;
+    DARK = 2;
+    SYSTEM = 3;
+  }
+}

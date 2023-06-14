@@ -4,7 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import com.kinandcarta.create.proxytoggle.core.broadcast.ProxyUpdateListener
+import com.kinandcarta.create.proxytoggle.core.common.proxyupdate.ProxyUpdateListener
 import com.kinandcarta.create.proxytoggle.widget.ToggleWidgetProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
