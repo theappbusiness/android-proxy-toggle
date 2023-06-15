@@ -7,12 +7,13 @@ import android.os.Build
 import android.service.quicksettings.Tile
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
-import com.kinandcarta.create.proxytoggle.core.model.Proxy
-import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
-import com.kinandcarta.create.proxytoggle.core.stub.Stubs.PROXY
+import com.kinandcarta.create.proxytoggle.core.common.proxy.Proxy
+import com.kinandcarta.create.proxytoggle.core.common.stub.Stubs.PROXY
+import com.kinandcarta.create.proxytoggle.repository.appdata.AppDataRepository
+import com.kinandcarta.create.proxytoggle.repository.devicesettings.DeviceSettingsManager
 import com.kinandcarta.create.proxytoggle.testutils.expectedLaunchIntent
 import io.mockk.MockKAnnotations
+import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -21,20 +22,30 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.P])
 class ProxyTileServiceTest {
+
+    private val dispatcher = StandardTestDispatcher()
 
     @RelaxedMockK
     lateinit var mockDeviceSettingsManager: DeviceSettingsManager
 
     @RelaxedMockK
-    lateinit var mockAppSettings: AppSettings
+    lateinit var mockAppDataRepository: AppDataRepository
 
     @RelaxedMockK
     lateinit var mockTile: Tile
@@ -51,19 +62,25 @@ class ProxyTileServiceTest {
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(dispatcher)
         MockKAnnotations.init(this)
 
-        every { mockAppSettings.lastUsedProxy } returns PROXY
+        every { mockAppDataRepository.pastProxies } returns flowOf(listOf(PROXY))
         every { mockContext.packageManager } returns mockPackageManager
 
         subject = spyk(ProxyTileService()) {
             deviceSettingsManager = mockDeviceSettingsManager
-            appSettings = mockAppSettings
+            appDataRepository = mockAppDataRepository
             every { baseContext } returns mockContext
             every { qsTile } returns mockTile
             every { startActivityAndCollapse(capture(intent)) } returns Unit
             every { getString(R.string.no_proxy_tile) } returns "No proxy"
         }
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -73,8 +90,9 @@ class ProxyTileServiceTest {
         }
 
         subject.onClick()
+        dispatcher.scheduler.advanceUntilIdle()
 
-        verify { mockDeviceSettingsManager.enableProxy(PROXY) }
+        coVerify { mockDeviceSettingsManager.enableProxy(PROXY) }
         verifyTileIsEnabled(PROXY.toString())
     }
 
@@ -85,8 +103,9 @@ class ProxyTileServiceTest {
         }
 
         subject.onClick()
+        dispatcher.scheduler.advanceUntilIdle()
 
-        verify { mockDeviceSettingsManager.enableProxy(PROXY) }
+        coVerify { mockDeviceSettingsManager.enableProxy(PROXY) }
         verifyTileIsEnabled(PROXY.toString())
     }
 
@@ -96,14 +115,15 @@ class ProxyTileServiceTest {
             every { value } returns Proxy.Disabled
         }
 
-        every { mockAppSettings.lastUsedProxy } returns Proxy.Disabled
+        every { mockAppDataRepository.pastProxies } returns flowOf(emptyList())
 
         val expectedIntent = expectedLaunchIntent(mockContext)
         every { mockPackageManager.getLaunchIntentForPackage(any()) } returns expectedIntent
 
         subject.onClick()
+        dispatcher.scheduler.advanceUntilIdle()
 
-        verify(exactly = 0) { mockDeviceSettingsManager.enableProxy(any()) }
+        coVerify(exactly = 0) { mockDeviceSettingsManager.enableProxy(any()) }
         verifyTileIsDisabled()
         assertThat(intent.captured.toUri(0)).isEqualTo(expectedIntent.toUri(0))
     }
@@ -115,6 +135,7 @@ class ProxyTileServiceTest {
         }
 
         subject.onClick()
+        dispatcher.scheduler.advanceUntilIdle()
 
         verify { mockDeviceSettingsManager.disableProxy() }
         verifyTileIsDisabled()

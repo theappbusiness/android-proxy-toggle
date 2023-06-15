@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Proxy Toggle</string>
+    <string name="dialog_title_special_permissions">Special permissions required</string>
+    <string name="dialog_message_special_permissions">This app needs special permissions that can only be granted by connecting this device to your computer and running a command from Terminal. You can find out how in the README.</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="connected">Connected</string>
+    <string name="hint_ip_address">IP Address</string>
+    <string name="hint_port">Port</string>
+    <string name="error_invalid_port">Please enter a valid port</string>
+    <string name="error_invalid_address">Please enter a valid IP address</string>
+    <string name="dialog_message_information">Uninstalling the app with the proxy enabled will permanently leave your device with this setup.\n\nMake sure the proxy is disabled before uninstalling the app!</string>
+    <string name="dialog_action_close">Close</string>
+    <string name="no_proxy_tile">No proxy</string>
+    <string name="widget_label_ip_address">IP Address</string>
+    <string name="widget_label_port">Port</string>
+    <string name="widget_not_set">Not set</string>
+    <string name="information">Information</string>
+    <string name="switch_theme">Switch theme</string>
+    <string name="enable_proxy">Enable proxy</string>
+    <string name="disable_proxy">Disable proxy</string>
+    <string name="past_proxies_dropdown">Past proxies dropdown</string>
+    <string name="settings">Open app settings</string>
+    <string name="toggle_proxy">Toggle proxy</string>
+</resources>

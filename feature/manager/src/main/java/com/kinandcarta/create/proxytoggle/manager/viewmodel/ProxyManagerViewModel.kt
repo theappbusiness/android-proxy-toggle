@@ -7,15 +7,15 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
-import com.kinandcarta.create.proxytoggle.core.android.ProxyValidator
-import com.kinandcarta.create.proxytoggle.core.android.ThemeSwitcher
-import com.kinandcarta.create.proxytoggle.core.model.Proxy
-import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
+import com.kinandcarta.create.proxytoggle.core.common.proxy.Proxy
+import com.kinandcarta.create.proxytoggle.core.common.proxy.ProxyValidator
 import com.kinandcarta.create.proxytoggle.manager.R
-import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel.UiState.TextFieldState
+import com.kinandcarta.create.proxytoggle.repository.appdata.AppDataRepository
+import com.kinandcarta.create.proxytoggle.repository.devicesettings.DeviceSettingsManager
+import com.kinandcarta.create.proxytoggle.repository.userprefs.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,35 +24,42 @@ import javax.inject.Inject
 class ProxyManagerViewModel @Inject constructor(
     private val deviceSettingsManager: DeviceSettingsManager,
     private val proxyValidator: ProxyValidator,
-    private val appSettings: AppSettings,
-    private val themeSwitcher: ThemeSwitcher
+    private val appDataRepository: AppDataRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
-    private var _uiState = mutableStateOf(
-        UiState(
-            darkTheme = themeSwitcher.isNightMode(),
-            proxyEnabled = false,
-            addressState = TextFieldState(text = getLastUsedProxy()?.address ?: ""),
-            portState = TextFieldState(text = getLastUsedProxy()?.port ?: "")
+    private var _uiState = mutableStateOf<UiState>(
+        UiState.Disconnected(
+            addressState = TextFieldState(text = ""),
+            portState = TextFieldState(text = ""),
+            pastProxies = emptyList()
         )
     )
     val uiState: State<UiState> = _uiState
 
     init {
         viewModelScope.launch {
-            deviceSettingsManager.proxySetting.collect { proxy ->
+            combine(
+                deviceSettingsManager.proxySetting,
+                appDataRepository.pastProxies
+            ) { proxy: Proxy, pastProxies: List<Proxy> ->
+                Pair(proxy, pastProxies)
+            }.collect { combinedValues ->
+                val (proxy, pastProxies) = combinedValues
                 if (proxy.isEnabled) {
-                    updateUiState {
-                        it.copy(
-                            proxyEnabled = true,
-                            addressState = it.addressState.copy(text = proxy.address, error = null),
-                            portState = it.portState.copy(text = proxy.port, error = null)
-                        )
-                    }
+                    _uiState.value = UiState.Connected(
+                        addressState = TextFieldState(text = proxy.address),
+                        portState = TextFieldState(text = proxy.port)
+                    )
                 } else {
-                    updateUiState {
-                        it.copy(proxyEnabled = false)
-                    }
+                    val (addressText, portText) = pastProxies.firstOrNull()?.let {
+                        Pair(it.address, it.port)
+                    } ?: Pair("", "")
+                    _uiState.value = UiState.Disconnected(
+                        addressState = TextFieldState(text = addressText),
+                        portState = TextFieldState(text = portText),
+                        pastProxies = pastProxies
+                    )
                 }
             }
         }
@@ -60,15 +67,16 @@ class ProxyManagerViewModel @Inject constructor(
 
     fun onUserInteraction(userInteraction: UserInteraction) {
         when (userInteraction) {
-            UserInteraction.ProxyToggled -> toggleProxy()
-            UserInteraction.ThemeToggled -> toggleTheme()
+            UserInteraction.ToggleProxyClicked -> toggleProxy()
+            UserInteraction.SwitchThemeClicked -> toggleTheme()
             is UserInteraction.AddressChanged -> onAddressChanged(userInteraction.newAddress)
             is UserInteraction.PortChanged -> onPortChanged(userInteraction.newPort)
+            is UserInteraction.ProxyFromDropDownSelected -> onProxySelected(userInteraction.proxy)
         }
     }
 
     fun onForceFocusExecuted() {
-        updateUiState {
+        updateDisconnectedState {
             it.copy(
                 addressState = it.addressState.copy(forceFocus = false),
                 portState = it.portState.copy(forceFocus = false)
@@ -80,18 +88,19 @@ class ProxyManagerViewModel @Inject constructor(
         if (deviceSettingsManager.proxySetting.value.isEnabled) {
             deviceSettingsManager.disableProxy()
         } else {
-            enableProxy()
+            enableProxyIfNoErrors()
         }
     }
 
     private fun toggleTheme() {
-        themeSwitcher.toggleTheme()
-        updateUiState { it.copy(darkTheme = themeSwitcher.isNightMode()) }
+        viewModelScope.launch {
+            userPreferencesRepository.toggleTheme()
+        }
     }
 
     private fun onAddressChanged(newText: String) {
         val newTextFiltered = newText.filter { it.isDigit() || it == '.' }
-        updateUiState {
+        updateDisconnectedState {
             it.copy(addressState = it.addressState.copy(text = newTextFiltered))
         }
     }
@@ -100,49 +109,62 @@ class ProxyManagerViewModel @Inject constructor(
         val newTextFiltered = newText
             .filter(Char::isDigit)
             .take(ProxyValidator.MAX_PORT.toString().length)
-        updateUiState {
+        updateDisconnectedState {
             it.copy(portState = it.portState.copy(text = newTextFiltered))
         }
     }
 
-    private fun enableProxy() {
-        val address = uiState.value.addressState.text
-        val port = uiState.value.portState.text
+    private fun onProxySelected(proxy: Proxy) {
+        updateDisconnectedState {
+            UiState.Disconnected(
+                addressState = TextFieldState(text = proxy.address),
+                portState = TextFieldState(text = proxy.port),
+                pastProxies = it.pastProxies
+            )
+        }
+    }
 
+    private fun enableProxyIfNoErrors() {
         updateErrors(ProxyManagerError.NoError)
-        updateUiState {
+        updateDisconnectedState {
             it.copy(
                 addressState = it.addressState.copy(forceFocus = false),
                 portState = it.portState.copy(forceFocus = false)
             )
         }
-        when {
-            !proxyValidator.isValidIP(address) -> {
-                viewModelScope.launch {
+
+        val address = uiState.value.addressState.text
+        val port = uiState.value.portState.text
+
+        viewModelScope.launch {
+            when {
+                proxyValidator.isValidIP(address).not() -> {
                     delay(ERROR_DELAY)
                     updateErrors(ProxyManagerError.InvalidAddress)
                 }
-            }
-            !proxyValidator.isValidPort(port) -> {
-                viewModelScope.launch {
+
+                proxyValidator.isValidPort(port).not() -> {
                     delay(ERROR_DELAY)
                     updateErrors(ProxyManagerError.InvalidPort)
                 }
-            }
-            else -> {
-                deviceSettingsManager.enableProxy(Proxy(address, port))
+
+                else -> {
+                    deviceSettingsManager.enableProxy(Proxy(address, port))
+                }
             }
         }
     }
 
-    private fun updateUiState(updateFunc: (UiState) -> UiState) {
-        _uiState.value = updateFunc(_uiState.value)
+    private fun updateDisconnectedState(updateFunc: (UiState.Disconnected) -> UiState.Disconnected) {
+        (uiState.value as? UiState.Disconnected)?.let {
+            _uiState.value = updateFunc(it)
+        }
     }
 
     private fun updateErrors(errorState: ProxyManagerError) {
-        when (errorState) {
-            ProxyManagerError.InvalidAddress -> {
-                updateUiState {
+        updateDisconnectedState {
+            when (errorState) {
+                ProxyManagerError.InvalidAddress -> {
                     it.copy(
                         addressState = it.addressState.copy(
                             error = R.string.error_invalid_address,
@@ -150,9 +172,8 @@ class ProxyManagerViewModel @Inject constructor(
                         )
                     )
                 }
-            }
-            ProxyManagerError.InvalidPort -> {
-                updateUiState {
+
+                ProxyManagerError.InvalidPort -> {
                     it.copy(
                         portState = it.portState.copy(
                             error = R.string.error_invalid_port,
@@ -160,9 +181,8 @@ class ProxyManagerViewModel @Inject constructor(
                         )
                     )
                 }
-            }
-            ProxyManagerError.NoError -> {
-                updateUiState {
+
+                ProxyManagerError.NoError -> {
                     it.copy(
                         addressState = it.addressState.copy(error = null),
                         portState = it.portState.copy(error = null)
@@ -172,33 +192,39 @@ class ProxyManagerViewModel @Inject constructor(
         }
     }
 
-    private fun getLastUsedProxy(): Proxy? {
-        return if (appSettings.lastUsedProxy.isEnabled) appSettings.lastUsedProxy else null
-    }
-
     @VisibleForTesting
     fun getInternalUiState(): MutableState<UiState> {
         return _uiState
     }
 
-    data class UiState(
-        val darkTheme: Boolean,
-        val proxyEnabled: Boolean,
-        val addressState: TextFieldState,
-        val portState: TextFieldState
-    ) {
-        data class TextFieldState(
-            val text: String,
-            @StringRes val error: Int? = null,
-            val forceFocus: Boolean = false
-        )
+    sealed class UiState {
+        abstract val addressState: TextFieldState
+        abstract val portState: TextFieldState
+
+        data class Connected(
+            override val addressState: TextFieldState,
+            override val portState: TextFieldState
+        ) : UiState()
+
+        data class Disconnected(
+            override val addressState: TextFieldState,
+            override val portState: TextFieldState,
+            val pastProxies: List<Proxy>
+        ) : UiState()
     }
 
+    data class TextFieldState(
+        val text: String,
+        @StringRes val error: Int? = null,
+        val forceFocus: Boolean = false
+    )
+
     sealed class UserInteraction {
-        object ProxyToggled : UserInteraction()
-        object ThemeToggled : UserInteraction()
+        object ToggleProxyClicked : UserInteraction()
+        object SwitchThemeClicked : UserInteraction()
         data class AddressChanged(val newAddress: String) : UserInteraction()
         data class PortChanged(val newPort: String) : UserInteraction()
+        data class ProxyFromDropDownSelected(val proxy: Proxy) : UserInteraction()
     }
 
     private sealed class ProxyManagerError {
@@ -208,6 +234,7 @@ class ProxyManagerViewModel @Inject constructor(
     }
 
     companion object {
+        // NOTE: necessary delay to refocus & announce existing error on next attempt to connect!
         private const val ERROR_DELAY = 50L
     }
 }

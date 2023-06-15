@@ -1,5 +1,6 @@
 package com.kinandcarta.create.proxytoggle.manager.view.composable
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -7,9 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,98 +28,80 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.res.ResourcesCompat
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
-import com.kinandcarta.create.proxytoggle.core.theme.BlueyGrey
-import com.kinandcarta.create.proxytoggle.core.theme.ProxyToggleTheme
+import com.kinandcarta.create.proxytoggle.core.ui.theme.BluishGrey
+import com.kinandcarta.create.proxytoggle.core.ui.theme.ProxyToggleTheme
 import com.kinandcarta.create.proxytoggle.manager.R
 
 @Composable
 fun ProxyToggleButton(
     proxyEnabled: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val (stateDescription, actionDescription) = Pair(
         stringResource(if (proxyEnabled) R.string.connected else R.string.disconnected),
-        stringResource(if (proxyEnabled) R.string.a11y_disable_proxy else R.string.a11y_enable_proxy)
+        stringResource(if (proxyEnabled) R.string.disable_proxy else R.string.enable_proxy)
     )
     val resources = LocalContext.current.resources
     val shadowStart = ResourcesCompat.getFloat(resources, R.dimen.toggle_shadow_start)
-    val shadowColor = if (proxyEnabled) MaterialTheme.colors.primary else BlueyGrey
+    val shadowColor = if (proxyEnabled) MaterialTheme.colorScheme.primary else BluishGrey
     IconButton(
         onClick = onClick,
-        modifier = Modifier.semantics {
-            this.stateDescription = stateDescription
-            onClick(label = actionDescription, action = { onClick(); true })
-        }
+        modifier = modifier
+            .semantics {
+                this.stateDescription = stateDescription
+                onClick(label = actionDescription, action = { onClick(); true })
+            }
+            .size(dimensionResource(R.dimen.toggle_shape_plus_shadow_size))
+            .background(
+                brush = Brush.radialGradient(
+                    shadowStart to shadowColor,
+                    1f to Color.Transparent
+                )
+            )
     ) {
         Box(
             modifier = Modifier
-                .size(dimensionResource(R.dimen.toggle_shape_plus_shadow_size))
-                .background(
-                    brush = Brush.radialGradient(
-                        shadowStart to shadowColor,
-                        1f to Color.Transparent
-                    )
-                )
+                .size(dimensionResource(R.dimen.toggle_shape_size))
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
-            Box(
+            val inset = dimensionResource(R.dimen.toggle_inset)
+            val topInset = dimensionResource(R.dimen.toggle_inset_small)
+            Image(
+                painter = painterResource(R.drawable.ic_power),
+                contentDescription = null,
                 modifier = Modifier
-                    .size(dimensionResource(R.dimen.toggle_shape_size))
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colors.surface)
-                    .align(Alignment.Center)
-            ) {
-                val inset = dimensionResource(R.dimen.toggle_inset)
-                val topInset = dimensionResource(R.dimen.toggle_inset_small)
-                Image(
-                    painter = painterResource(R.drawable.ic_power),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(start = inset, top = topInset, end = inset, bottom = inset)
-                        .fillMaxSize()
-                        .align(Alignment.Center),
-                    colorFilter = ColorFilter.tint(
-                        if (proxyEnabled) MaterialTheme.colors.primary else BlueyGrey
-                    )
+                    .padding(start = inset, top = topInset, end = inset, bottom = inset)
+                    .fillMaxSize()
+                    .align(Alignment.Center),
+                colorFilter = ColorFilter.tint(
+                    if (proxyEnabled) MaterialTheme.colorScheme.primary else BluishGrey
                 )
-            }
+            )
         }
     }
 }
 
-@Preview(name = "Enabled (Light)", group = "ProxyToggleButton")
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 @ShowkaseComposable(skip = true)
 fun ProxyToggleButtonEnabledPreview() {
     ProxyToggleButtonPreviewContent(proxyEnabled = true)
 }
 
-@Preview(name = "Enabled (Dark)", group = "ProxyToggleButton")
-@Composable
-@ShowkaseComposable(skip = true)
-fun ProxyToggleButtonEnabledPreviewDark() {
-    ProxyToggleButtonPreviewContent(darkTheme = true, proxyEnabled = true)
-}
-
-@Preview(name = "Disabled (Light)", group = "ProxyToggleButton")
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 @ShowkaseComposable(skip = true)
 fun ProxyToggleButtonDisabledPreview() {
     ProxyToggleButtonPreviewContent()
 }
 
-@Preview(name = "Disabled (Dark)", group = "ProxyToggleButton")
 @Composable
-@ShowkaseComposable(skip = true)
-fun ProxyToggleButtonDisabledPreviewDark() {
-    ProxyToggleButtonPreviewContent(darkTheme = true)
-}
-
-@Composable
-private fun ProxyToggleButtonPreviewContent(
-    darkTheme: Boolean = false,
-    proxyEnabled: Boolean = false
-) {
-    ProxyToggleTheme(darkTheme = darkTheme) {
+private fun ProxyToggleButtonPreviewContent(proxyEnabled: Boolean = false) {
+    ProxyToggleTheme {
         Surface {
             ProxyToggleButton(proxyEnabled = proxyEnabled, onClick = {})
         }

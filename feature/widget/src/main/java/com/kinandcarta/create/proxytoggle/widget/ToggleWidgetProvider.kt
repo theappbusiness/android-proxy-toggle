@@ -8,11 +8,16 @@ import android.content.Intent
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
-import com.kinandcarta.create.proxytoggle.core.android.DeviceSettingsManager
-import com.kinandcarta.create.proxytoggle.core.intent.getAppLaunchIntent
-import com.kinandcarta.create.proxytoggle.core.model.Proxy
-import com.kinandcarta.create.proxytoggle.core.settings.AppSettings
+import com.kinandcarta.create.proxytoggle.core.common.intent.getAppLaunchIntent
+import com.kinandcarta.create.proxytoggle.core.common.proxy.Proxy
+import com.kinandcarta.create.proxytoggle.repository.appdata.AppDataRepository
+import com.kinandcarta.create.proxytoggle.repository.devicesettings.DeviceSettingsManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -27,7 +32,9 @@ class ToggleWidgetProvider : AppWidgetProvider() {
     lateinit var deviceSettingsManager: DeviceSettingsManager
 
     @Inject
-    lateinit var appSettings: AppSettings
+    lateinit var appDataRepository: AppDataRepository
+
+    private val coroutineScope = CoroutineScope(Job() + Dispatchers.Main.immediate)
 
     override fun onUpdate(
         context: Context,
@@ -58,25 +65,27 @@ class ToggleWidgetProvider : AppWidgetProvider() {
     }
 
     private fun buildDisabledView(remoteView: RemoteViews, context: Context) {
-        remoteView.apply {
-            val lastUsedProxy = appSettings.lastUsedProxy
-            if (lastUsedProxy.isEnabled) {
-                setTextViewText(R.id.address, lastUsedProxy.address)
-                setTextViewText(R.id.port, lastUsedProxy.port)
-            } else {
-                setTextViewText(R.id.address, context.getString(R.string.widget_not_set))
-                setTextViewText(R.id.port, context.getString(R.string.widget_not_set))
+        coroutineScope.launch {
+            remoteView.apply {
+                val lastUsedProxy = appDataRepository.pastProxies.first().firstOrNull()
+                if (lastUsedProxy != null) {
+                    setTextViewText(R.id.address, lastUsedProxy.address)
+                    setTextViewText(R.id.port, lastUsedProxy.port)
+                } else {
+                    setTextViewText(R.id.address, context.getString(R.string.widget_not_set))
+                    setTextViewText(R.id.port, context.getString(R.string.widget_not_set))
+                }
+                setTextViewText(R.id.status, context.getString(R.string.disconnected))
+                setTextColor(
+                    R.id.status,
+                    ContextCompat.getColor(context, R.color.widget_label_disabled)
+                )
+                setImageViewResource(R.id.toggle, R.drawable.widget_toggle_disabled)
+                setOnClickPendingIntent(
+                    R.id.toggle,
+                    ACTION_PROXY_ENABLE.asPendingIntent(context)
+                )
             }
-            setTextViewText(R.id.status, context.getString(R.string.disconnected))
-            setTextColor(
-                R.id.status,
-                ContextCompat.getColor(context, R.color.widget_label_disabled)
-            )
-            setImageViewResource(R.id.toggle, R.drawable.widget_toggle_disabled)
-            setOnClickPendingIntent(
-                R.id.toggle,
-                ACTION_PROXY_ENABLE.asPendingIntent(context)
-            )
         }
     }
 
@@ -103,12 +112,14 @@ class ToggleWidgetProvider : AppWidgetProvider() {
     }
 
     private fun enableProxy(context: Context) {
-        val lastUsedProxy = appSettings.lastUsedProxy
-        if (lastUsedProxy.isEnabled) {
-            deviceSettingsManager.enableProxy(lastUsedProxy)
-        } else {
-            // There is no last used Proxy, prompt the user to create one
-            getAppLaunchIntent(context)?.let { context.startActivity(it) }
+        coroutineScope.launch {
+            val lastUsedProxy = appDataRepository.pastProxies.first().firstOrNull()
+            if (lastUsedProxy != null) {
+                deviceSettingsManager.enableProxy(lastUsedProxy)
+            } else {
+                // There is no last used Proxy, prompt the user to create one
+                getAppLaunchIntent(context)?.let { context.startActivity(it) }
+            }
         }
     }
 
