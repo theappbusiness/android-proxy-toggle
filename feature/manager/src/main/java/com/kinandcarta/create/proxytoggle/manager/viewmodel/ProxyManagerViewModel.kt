@@ -1,10 +1,12 @@
 package com.kinandcarta.create.proxytoggle.manager.viewmodel
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kinandcarta.create.proxytoggle.core.common.proxy.Proxy
@@ -16,7 +18,9 @@ import com.kinandcarta.create.proxytoggle.repository.userprefs.UserPreferencesRe
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
@@ -25,7 +29,8 @@ class ProxyManagerViewModel @Inject constructor(
     private val deviceSettingsManager: DeviceSettingsManager,
     private val proxyValidator: ProxyValidator,
     private val appDataRepository: AppDataRepository,
-    private val userPreferencesRepository: UserPreferencesRepository
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private var _uiState = mutableStateOf<UiState>(
@@ -63,6 +68,13 @@ class ProxyManagerViewModel @Inject constructor(
                 }
             }
         }
+
+        viewModelScope.launch {
+            savedStateHandle.getStateFlow(PROXY_KEY, "").filter { it.isNotBlank() }.collect {
+                Log.i("Intent", "On start intent $it")
+                onSetProxy(it)
+            }
+        }
     }
 
     fun onUserInteraction(userInteraction: UserInteraction) {
@@ -72,6 +84,31 @@ class ProxyManagerViewModel @Inject constructor(
             is UserInteraction.AddressChanged -> onAddressChanged(userInteraction.newAddress)
             is UserInteraction.PortChanged -> onPortChanged(userInteraction.newPort)
             is UserInteraction.ProxyFromDropDownSelected -> onProxySelected(userInteraction.proxy)
+        }
+    }
+
+    fun onSetProxy(proxyStr: String) {
+        viewModelScope.launch {
+            if (deviceSettingsManager.proxySetting.value.isEnabled) {
+                // Turn off proxy before setting the proxy ip and port
+                deviceSettingsManager.disableProxy()
+
+                while (uiState.value is UiState.Connected) {
+                    yield()
+                }
+            }
+            val inputArray = proxyStr.split(':')
+            val inputIp = inputArray.firstOrNull()
+            val inputPort = inputArray.getOrNull(1)
+            inputIp?.takeIf { it.isNotBlank() }?.let {
+                onAddressChanged(it)
+            }
+
+            inputPort?.takeIf { it.isNotBlank() }?.let {
+                onPortChanged(it)
+            }
+
+            // Leave it for user to turn on the proxy
         }
     }
 
@@ -236,5 +273,7 @@ class ProxyManagerViewModel @Inject constructor(
     companion object {
         // NOTE: necessary delay to refocus & announce existing error on next attempt to connect!
         private const val ERROR_DELAY = 50L
+
+        const val PROXY_KEY = "proxy"
     }
 }

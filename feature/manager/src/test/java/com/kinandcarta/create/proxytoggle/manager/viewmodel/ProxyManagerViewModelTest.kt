@@ -1,10 +1,12 @@
 package com.kinandcarta.create.proxytoggle.manager.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth.assertThat
 import com.kinandcarta.create.proxytoggle.core.common.proxy.Proxy
 import com.kinandcarta.create.proxytoggle.core.common.proxy.ProxyValidator
 import com.kinandcarta.create.proxytoggle.core.common.stub.Stubs.PROXY_ADDRESS
 import com.kinandcarta.create.proxytoggle.core.common.stub.Stubs.PROXY_PORT
+import com.kinandcarta.create.proxytoggle.core.common.stub.Stubs.VALID_PROXY
 import com.kinandcarta.create.proxytoggle.manager.R
 import com.kinandcarta.create.proxytoggle.repository.appdata.AppDataRepository
 import com.kinandcarta.create.proxytoggle.repository.devicesettings.DeviceSettingsManager
@@ -49,6 +51,8 @@ class ProxyManagerViewModelTest {
     private lateinit var mockUserPreferencesRepository: UserPreferencesRepository
 
     private val fakeProxyStateFlow = MutableStateFlow(Proxy.Disabled)
+
+    private val savedStateHandle = SavedStateHandle()
 
     private lateinit var subject: ProxyManagerViewModel
 
@@ -304,11 +308,65 @@ class ProxyManagerViewModelTest {
         }
     }
 
+    @Test
+    fun `onSetProxy() - Auto fill in address and port`() {
+        // WHEN
+        dispatcher.scheduler.advanceUntilIdle()
+        every { mockProxyValidator.isValidIP(any()) } returns true
+        every { mockProxyValidator.isValidPort(any()) } returns true
+        subject.onSetProxy(VALID_PROXY)
+        dispatcher.scheduler.advanceUntilIdle()
+
+        // THEN
+        assertThat(subject.uiState.value).isEqualTo(
+            ProxyManagerViewModel.UiState.Disconnected(
+                addressState = ProxyManagerViewModel.TextFieldState(text = PROXY_ADDRESS),
+                portState = ProxyManagerViewModel.TextFieldState(text = PROXY_PORT),
+                pastProxies = emptyList()
+            )
+        )
+    }
+
+    @Test
+    fun `onSetProxy() - Auto close previous proxy before filling in address and port`() {
+        // GIVEN
+        every { mockProxyValidator.isValidIP(any()) } returns true
+        every { mockProxyValidator.isValidPort(any()) } returns true
+        givenDisconnectedWith(address = "2.3.4.5", port = "333")
+        subject.onUserInteraction(ProxyManagerViewModel.UserInteraction.ToggleProxyClicked)
+        dispatcher.scheduler.advanceUntilIdle()
+
+        // Check now is connected
+        assertThat(subject.uiState.value).isInstanceOf(ProxyManagerViewModel.UiState.Connected::class.java)
+        coVerify {
+            mockProxyValidator.isValidIP("2.3.4.5")
+            mockProxyValidator.isValidPort("333")
+            mockDeviceSettingsManager.enableProxy(Proxy("2.3.4.5", "333"))
+        }
+
+        // WHEN
+        subject.onSetProxy(VALID_PROXY)
+        dispatcher.scheduler.advanceUntilIdle()
+
+        // THEN
+        assertThat(subject.uiState.value).isEqualTo(
+            ProxyManagerViewModel.UiState.Disconnected(
+                addressState = ProxyManagerViewModel.TextFieldState(text = PROXY_ADDRESS),
+                portState = ProxyManagerViewModel.TextFieldState(text = PROXY_PORT),
+                pastProxies = emptyList()
+            )
+        )
+        verify {
+            mockDeviceSettingsManager.disableProxy()
+        }
+    }
+
     private fun initSubject() = ProxyManagerViewModel(
         mockDeviceSettingsManager,
         mockProxyValidator,
         mockAppDataRepository,
-        mockUserPreferencesRepository
+        mockUserPreferencesRepository,
+        savedStateHandle
     )
 
     private fun givenPastProxies(pastProxies: List<Proxy>) {
