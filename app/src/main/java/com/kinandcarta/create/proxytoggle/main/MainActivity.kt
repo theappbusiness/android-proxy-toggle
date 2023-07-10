@@ -1,8 +1,10 @@
 package com.kinandcarta.create.proxytoggle.main
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -17,12 +19,14 @@ import androidx.core.content.ContextCompat
 import com.kinandcarta.create.proxytoggle.core.ui.theme.ProxyToggleTheme
 import com.kinandcarta.create.proxytoggle.manager.view.screen.BlockAppScreen
 import com.kinandcarta.create.proxytoggle.manager.view.screen.ProxyManagerScreen
+import com.kinandcarta.create.proxytoggle.manager.viewmodel.ProxyManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
+    private val proxyViewModel: ProxyManagerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +38,14 @@ class MainActivity : AppCompatActivity() {
             val useVerticalLayout = heightSizeClass != WindowHeightSizeClass.Compact
 
             MainScreen(useDarkTheme = useDarkTheme, useVerticalLayout = useVerticalLayout)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.getStringExtra(ProxyManagerViewModel.PROXY_KEY)?.takeIf { it.isNotBlank() }?.let {
+            Log.i("Intent", "On new intent $it")
+            proxyViewModel.onSetProxy(it)
         }
     }
 }
